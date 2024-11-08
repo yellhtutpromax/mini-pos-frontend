@@ -3,7 +3,8 @@ import { verifySession } from '@/app/lib/dal'
 
 const Dashboard = async (props) => {
   const session = await verifySession()
-  const userRole = session.role
+  console.table(session)
+  // const userRole = session.role
   return (
     <>
       <h1>This is dashboard page ... </h1>
@@ -11,4 +12,4 @@ const Dashboard = async (props) => {
   )
 }
 
-export default Dashboard;
+export default Dashboard

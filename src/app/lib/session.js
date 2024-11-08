@@ -1,7 +1,8 @@
 import 'server-only'
+
 import { SignJWT, jwtVerify } from 'jose'
 import { NextResponse } from "next/server"
-// import { cookies } from 'next/headers'
+import { cookies } from 'next/headers'
 
 const secretKey = process.env.SESSION_SECRET || '0Z3ZEdzSHX0um9OeWkVONY6OI7fmNVUe4LZmBl0Z'
 if (!secretKey) throw new Error("SESSION_SECRET environment variable is not set.")
@@ -30,9 +31,10 @@ export async function createSession(userId) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   const session = await encrypt({ userId, expiresAt })
 
-  cookies().set('session', session, {
+  const cookieStore = await cookies() // Await `cookies()` to get the instance
+  cookieStore.set('session', session, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     expires: expiresAt,
     sameSite: 'lax',
     path: '/',
@@ -47,15 +49,16 @@ export async function signup(formData) {
 }
 
 export async function updateSession() {
-  const sessionCookie = (await cookies()).get('session')?.value
+
+  const cookieStore = await cookies() // Await `cookies()` to get the instance
+  const sessionCookie = cookieStore.get('session')?.value
   if (!sessionCookie) return null
 
   const payload = await decrypt(sessionCookie)
   if (!payload || !sessionCookie) return null
 
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    (await cookies())
-    .set('session', sessionCookie, {
+  cookieStore.set('session', sessionCookie, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     expires: expiresAt,

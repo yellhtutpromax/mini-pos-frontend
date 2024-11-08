@@ -1,23 +1,41 @@
+"use server"
+
+import Joi from "joi";
 import {createSession} from "@/app/lib/session";
 import {redirect} from "next/navigation";
+import {console} from "next/dist/compiled/@edge-runtime/primitives";
+import {usersDb} from "@/app/constants/constants";
 
-const users = [
-  {id: 1, name: "Yell Htut", username: "yellhtut", email: "yellhtut4@gmail.com", password: "admin123"},
-  {id: 2, name: "Tun Min", username: "tunmin", email: "tunmin4@gmail.com", password: "admin123"},
-];
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().min(5).required(),
+})
 
-export async function login(state, formData) {
-  // setLoading(true)
-  // setError("")
-  const user = users.find(
+function validateCredentials(email, password) {
+  const { error, value } = loginSchema.validate({ email, password })
+  if (error) {
+    const errorArray = error.details.map((err) => err.message)
+    return { isValid: false, errors: errorArray }
+  }
+  return { isValid: true, value }
+}
+
+export async function login(email, password) {
+
+  // Validate input
+  const { isValid, errors, value } = validateCredentials(email, password)
+  if (!isValid) {
+    return false  // Return early if validation fails
+  }
+  // console.log(isValid)
+  // console.log(errors)
+  // console.log('-----------------')
+  const user = usersDb.find(
     (user) =>
-      user.email === formData.get('email') &&
-      user.password === formData.get('password')
-  );
-  console.table(user)
+      user.email === email &&
+      user.password === password
+  )
   if (!user) {
-    // setError("Invalid credentials")
-    // setLoading(false)
     console.log("Invalid credentials")
     return false
   }
@@ -29,7 +47,7 @@ export async function login(state, formData) {
     // setError("") // Update the error state
     // setLoading(false)
     redirect("/dashboard")
+    return result // Return the result of the signIn
   }
-  // return result // Return the result of the signIn
 }
 

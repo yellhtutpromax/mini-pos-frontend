@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import "./styles/globals.css";
-import {Providers} from "./providers"; // for nextui
+import {Providers} from "./providers";
+import Header from "@/app/components/Header/Header"; // for nextui
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,11 +21,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" className='dark'>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} >
         <Providers>
+          {/*<Header/>*/}
           {children}
         </Providers>
       </body>

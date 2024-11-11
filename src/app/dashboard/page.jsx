@@ -3,7 +3,6 @@ import { verifySession } from '@/app/lib/dal'
 
 const Dashboard = async (props) => {
   const session = await verifySession()
-  console.table(session)
   // const userRole = session.role
   return (
     <>

@@ -32,7 +32,7 @@ export async function createSession(userId) {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     const session = await encrypt({ userId, expiresAt })
     const cookieStore = await cookies() // Await `cookies()` to get the instance
-    cookieStore.set('session', session, {
+    cookieStore.set('rats', session, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       expires: expiresAt,
@@ -57,14 +57,14 @@ export async function signup(formData) {
 export async function updateSession() {
 
   const cookieStore = await cookies() // Await `cookies()` to get the instance
-  const sessionCookie = cookieStore.get('session')?.value
+  const sessionCookie = cookieStore.get('rats')?.value
   if (!sessionCookie) return null
 
   const payload = await decrypt(sessionCookie)
   if (!payload || !sessionCookie) return null
 
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-  cookieStore.set('session', sessionCookie, {
+  cookieStore.set('rats', sessionCookie, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     expires: expiresAt,
@@ -75,7 +75,7 @@ export async function updateSession() {
 
 export async function deleteSession() {
   const cookieStore = await cookies()
-  cookieStore.delete('session')
+  cookieStore.delete('rats')
 }
 
 export async function logout() {

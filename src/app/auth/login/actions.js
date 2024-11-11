@@ -40,10 +40,7 @@ export async function login(email, password) {
     return false
   }
   const result = await createSession(user.id)
-  console.table(result)
-  if (result)
-  {
-    // Redirect to home or any other page on successful login
+  if (result) {
     // setError("") // Update the error state
     // setLoading(false)
     redirect("/dashboard")

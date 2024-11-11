@@ -28,17 +28,23 @@ export async function decrypt(session) {
 }
 
 export async function createSession(userId) {
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-  const session = await encrypt({ userId, expiresAt })
-
-  const cookieStore = await cookies() // Await `cookies()` to get the instance
-  cookieStore.set('session', session, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    expires: expiresAt,
-    sameSite: 'lax',
-    path: '/',
-  })
+  try {
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    const session = await encrypt({ userId, expiresAt })
+    const cookieStore = await cookies() // Await `cookies()` to get the instance
+    cookieStore.set('session', session, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      expires: expiresAt,
+      sameSite: 'lax',
+      path: '/',
+    })
+    return true
+  } catch (error) {
+    console.error('Error creating session:', error);
+    throw new Error('Failed to create session.');
+    return false
+  }
 }
 
 export async function signup(formData) {

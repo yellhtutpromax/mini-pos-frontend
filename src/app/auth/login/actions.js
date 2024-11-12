@@ -39,7 +39,7 @@ export async function login(email, password) {
     console.log("Invalid credentials")
     return false
   }
-  const result = await createSession(user.id)
+  const result = await createSession(user)
   if (result) {
     // setError("") // Update the error state
     // setLoading(false)

@@ -27,10 +27,14 @@ export async function decrypt(session) {
   }
 }
 
-export async function createSession(userId) {
+export async function createSession(user) {
   try {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    const session = await encrypt({ userId, expiresAt })
+    const session = await encrypt({
+      id: user.id,
+      name: user.name,
+      expiresAt: expiresAt,
+    })
     const cookieStore = await cookies() // Await `cookies()` to get the instance
     cookieStore.set('rats', session, {
       httpOnly: true,
@@ -43,7 +47,6 @@ export async function createSession(userId) {
   } catch (error) {
     console.error('Error creating session:', error);
     throw new Error('Failed to create session.');
-    return false
   }
 }
 
@@ -80,5 +83,5 @@ export async function deleteSession() {
 
 export async function logout() {
   await deleteSession()
-  return NextResponse.redirect('/login')
+  return NextResponse.redirect('/auth/login')
 }

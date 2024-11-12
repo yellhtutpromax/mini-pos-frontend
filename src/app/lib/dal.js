@@ -5,17 +5,17 @@ import { decrypt } from '@/app/lib/session'
 import {redirect} from "next/navigation"
 
 export const verifySession = async () => {
-  const cookie = (await cookies()).get('session')?.value
+  const cookie = (await cookies()).get('rats')?.value
   if (!cookie) {
-    redirect('auth/login')
+    redirect('/auth/login')
     return
   }
 
   const session = await decrypt(cookie)
-  if (!session.userId) {
-    redirect('auth/login')
+  if (!session.id) {
+    redirect('/auth/login')
     return
   }
 
-  return { isAuth: true, userId: session.userId }
+  return { isAuth: true, id: session.id }
 }

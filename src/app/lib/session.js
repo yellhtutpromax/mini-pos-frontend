@@ -77,11 +77,12 @@ export async function updateSession() {
 }
 
 export async function deleteSession() {
-  const cookieStore = await cookies()
-  cookieStore.delete('rats')
-}
-
-export async function logout() {
-  await deleteSession()
-  return NextResponse.redirect('/auth/login')
+  try {
+    const cookieStore = await cookies()
+    cookieStore.delete('rats')
+    return true
+  }catch (error) {
+    console.error("Session deletion error:", error);
+    return false;
+  }
 }

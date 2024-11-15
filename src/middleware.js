@@ -15,13 +15,13 @@ export default async function middleware(request) {
 
   const cookie = (await cookies()).get('rats')?.value;
   const session = cookie && await decrypt(cookie)
-  console.log("Is Protected Route:", isProtectedRoute)
-  console.log("Is Public Route:", isPublicRoute)
-  console.log("Cookie Value:", cookie)
-  console.log("Session Value:", session)
-  console.log("Middleware is running ....")
-  console.log("Path", path)
-  console.log('----------------------------------------------------------------')
+  // console.log("Is Protected Route:", isProtectedRoute)
+  // console.log("Is Public Route:", isPublicRoute)
+  // console.log("Cookie Value:", cookie)
+  // console.log("Session Value:", session)
+  // console.log("Middleware is running ....")
+  // console.log("Path", path)
+  // console.log('----------------------------------------------------------------')
 
 
   // Redirect to /login if the user is not authenticated
@@ -44,8 +44,6 @@ export default async function middleware(request) {
 // Routes Middleware should not run on
 export const config = {
   matcher: [
-    // '/auth/login/:path*',
-    // '/dashboard',
     '/((?!api|_next/static|_next/image|.*\\.png$).*)'
   ],
 }

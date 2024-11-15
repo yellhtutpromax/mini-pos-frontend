@@ -1,11 +1,18 @@
 import React from 'react';
-import { verifySession } from '@/app/lib/dal'
+import {decrypt} from "@/app/lib/session";
+import { cookies } from 'next/headers'
+import {getAuthUser} from "@/app/hooks/auth";
+
+export const metadata = {
+  title: 'Dashboard ',
+  description: 'Welcome to your dashboard, where you can manage your application.',
+}
 
 const Dashboard = async (props) => {
-  const session = await verifySession()
   return (
-    <>
-    </>
+    <div className="bg-background">
+
+    </div>
   )
 }
 

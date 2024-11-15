@@ -1,10 +1,11 @@
 "use server"
 
 import Joi from "joi";
-import {createSession} from "@/app/lib/session";
+import {createSession, deleteSession} from "@/app/lib/session";
 import {redirect} from "next/navigation";
 import {console} from "next/dist/compiled/@edge-runtime/primitives";
 import {usersDb} from "@/app/constants/constants";
+import {NextResponse} from "next/server";
 
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -44,7 +45,19 @@ export async function login(email, password) {
     // setError("") // Update the error state
     // setLoading(false)
     redirect("/dashboard")
-    return result // Return the result of the signIn
+    // return result // Return the result of the signIn
+  }
+}
+
+export async function logout() {
+  try {
+    const sessionDeleted = await deleteSession();
+    if (sessionDeleted) {
+      return redirect('/auth/login');
+    }
+  } catch (error) {
+    console.error("Logout error:", error);
+    return NextResponse.error(); // Optionally handle with a specific error page
   }
 }
 

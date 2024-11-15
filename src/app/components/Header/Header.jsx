@@ -1,5 +1,3 @@
-"use client"
-
 import {
   Navbar,
   NavbarBrand,
@@ -11,39 +9,21 @@ import {
   DropdownTrigger,
   Dropdown,
   DropdownMenu,
-  Avatar,
   User
 } from "@nextui-org/react";
 import {Logo} from "./Logo.jsx";
 import {SearchIcon} from "./SearchIcon.jsx";
+import {logout} from "@/app/auth/login/actions";
 
-export default function Header() {
+const Header = () => {
   return (
-    <Navbar isBordered>
+    <Navbar className="shadow">
       <NavbarContent justify="start">
         <NavbarBrand className="mr-4">
           <Logo />
           <p className="hidden sm:block font-bold text-inherit">ACME</p>
         </NavbarBrand>
-        <NavbarContent className="hidden sm:flex gap-3">
-          <NavbarItem>
-            <Link color="foreground" href="#">
-              Features
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive>
-            <Link href="#" aria-current="page" color="secondary">
-              Customers
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link color="foreground" href="#">
-              Integrations
-            </Link>
-          </NavbarItem>
-        </NavbarContent>
       </NavbarContent>
-
       <NavbarContent as="div" className="items-center" justify="end">
         <Input
           classNames={{
@@ -66,24 +46,19 @@ export default function Header() {
                 src: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
               }}
               className="transition-transform"
-              description="@tonyreichert"
-              name="Tony Reichert"
+              description="Admin"
+              // name={authUser.name || 'Name'}
+              name={'Name'}
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="User Actions" variant="flat">
-            <DropdownItem key="profile" className="h-14 gap-2">
-              <p className="font-bold">Signed in as</p>
-              <p className="font-bold">@tonyreichert</p>
-            </DropdownItem>
-            <DropdownItem key="settings">
-              Settings
-            </DropdownItem>
-            <DropdownItem key="logout" color="danger">
-              Log Out
-            </DropdownItem>
+            <DropdownItem key="settings">Settings</DropdownItem>
+            <DropdownItem onClick={logout} key="logout" color="danger">Log Out</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </NavbarContent>
     </Navbar>
   );
 }
+
+export default Header

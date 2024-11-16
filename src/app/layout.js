@@ -23,9 +23,9 @@ const geistMono = localFont({
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
-
-  const isAuthRoute = pathname.startsWith("/auth");
-  const Layout = isAuthRoute ? WithoutAuthLayout : AuthLayout;
+  const withoutAuthPaths = ['/', '/auth/login']; // exclude path
+  const isWithoutAuth = withoutAuthPaths.includes(pathname)
+  const Layout = isWithoutAuth ? WithoutAuthLayout : AuthLayout;
 
   return (
     <html lang="en" className='dark'>

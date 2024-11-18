@@ -7,6 +7,7 @@ const usersDb = [
     password: "admin123",
     role: "admin", // e.g., CEO, Sales Manager
     path: ["dashboard", "members"],
+    refreshToken: "storeId0349534kjkljgfkdjgkfdjgkjfdlgfdkg",
     permission: {
       members: {
         list: true,

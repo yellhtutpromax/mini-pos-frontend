@@ -61,3 +61,35 @@ export async function logout() {
   }
 }
 
+// export async function refreshAccessToken() {
+//   try {
+//     const cookieStore = await cookies();
+//     const refreshToken = cookieStore.get('refresh_token')?.value;
+//
+//     if (!refreshToken) {
+//       throw new Error("No refresh token found");
+//     }
+//
+//     const payload = await decrypt(refreshToken);
+//
+//     // Validate and issue a new access token
+//     const newAccessToken = await encrypt({
+//       id: payload.id,
+//       name: userDb.name,
+//       role: userDb.role,
+//     }, ACCESS_EXPIRATION);
+//
+//     cookieStore.set('access_token', newAccessToken, {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === 'production',
+//       sameSite: 'lax',
+//       path: '/',
+//     });
+//
+//     return newAccessToken;
+//   } catch (error) {
+//     console.error("Error refreshing access token:", error);
+//     throw new Error("Failed to refresh access token.");
+//   }
+// }
+

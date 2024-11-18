@@ -121,8 +121,6 @@ export async function refreshAccessToken(refreshToken) {
         sameSite: 'lax',
         path: '/',
       });
-      console.log('new access set at '+new Date() );
-      console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
       return newAccessToken; // Return the new access token
     }
   } catch (error) {

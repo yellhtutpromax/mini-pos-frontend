@@ -9,8 +9,6 @@ const publicRoutes = ['/auth/login', '/signup', '/']
 export default async function middleware(request) {
   // 2. Check if the current route is protected or public
   const path = request.nextUrl.pathname
-  console.log('middleware is running at '+path)
-  console.log('_________________________________________________')
   const isProtectedRoute = protectedRoutes.includes(path)
   const isPublicRoute = publicRoutes.includes(path)
 
@@ -34,8 +32,8 @@ export default async function middleware(request) {
   // If access token is expired, attempt to refresh using refresh token
   if (!session?.id && refreshToken) {
     const newAccessToken = await refreshAccessToken(refreshToken);
-    console.log('Access token refreshed ...');
-    console.log('----------------------------------------------------')
+    // console.log('Access token refreshed ...');
+    // console.log('----------------------------------------------------')
   }
 
 

@@ -1,10 +1,10 @@
-const Product = () => {
+const Member = () => {
   return (
     <>
-      <h1>Product Page</h1>
+      <h1>Member Page</h1>
       {/* Add your product related components here */}
     </>
   )
 }
 
-export default Product;
+export default Member;

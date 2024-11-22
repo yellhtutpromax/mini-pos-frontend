@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 192.168.1.174 -p 4000",
+    "dev": "next dev -H 196.1.1.154 -p 4000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

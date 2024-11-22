@@ -36,6 +36,7 @@ export async function login(email, password) {
       user.email === email &&
       user.password === password
   )
+  console.log(user)
   if (!user) {
     console.log("Invalid credentials")
     return false

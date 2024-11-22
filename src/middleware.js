@@ -22,6 +22,10 @@ export default async function middleware(request) {
     session = await decrypt(accessToken);
   }
 
+  console.log(session)
+  console.log('Middleware is running '+ path)
+  console.log('*********************************************')
+
   // console.log("Is Protected Route:", isProtectedRoute)
   // console.log("Is Public Route:", isPublicRoute)
   // console.log("Cookie Value:", cookie)
@@ -29,13 +33,10 @@ export default async function middleware(request) {
   // console.log("Middleware is running ....")
   // console.log("Path", path)
 
-  // If access token is expired, attempt to refresh using refresh token
+  // If access token is expired, attempt to refresh
   if (!session?.id && refreshToken) {
-    const newAccessToken = await refreshAccessToken(refreshToken);
-    // console.log('Access token refreshed ...');
-    // console.log('----------------------------------------------------')
+    await refreshAccessToken(refreshToken);
   }
-
 
   // Redirect to /login if the user is not authenticated
   if (isProtectedRoute && !session?.id) {

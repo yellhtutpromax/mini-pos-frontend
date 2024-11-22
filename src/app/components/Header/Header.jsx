@@ -15,7 +15,9 @@ import {Logo} from "./Logo.jsx";
 import {SearchIcon} from "./SearchIcon.jsx";
 import {logout} from "@/app/auth/login/actions";
 
-const Header = () => {
+const Header = ({authUser}) => {
+  // console.log("----------------------")
+  // console.log(authUser)
   return (
     <Navbar className="shadow">
       <NavbarContent justify="start">
@@ -23,7 +25,20 @@ const Header = () => {
           <Logo />
           <p className="hidden sm:block font-bold text-inherit">ACME</p>
         </NavbarBrand>
+        <NavbarContent className="hidden sm:flex gap-3">
+          <NavbarItem isActive>
+            <Link href="/dashboard" aria-current="page">
+              Dashboard
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link color="foreground" href="/members">
+              Member
+            </Link>
+          </NavbarItem>
+        </NavbarContent>
       </NavbarContent>
+
       <NavbarContent as="div" className="items-center" justify="end">
         <Input
           classNames={{

@@ -111,6 +111,9 @@ export async function refreshAccessToken(refreshToken) {
       const accessExpireAt = new Date(Date.now() + 1 * 60 * 1000) // 1 minute
       const newAccessToken = await encrypt({
         id: payload.id,
+        name: payload.name,
+        role: payload.role,
+        path: payload.path,
         expiresAt: accessExpireAt,
       }); // New access token expires in 1 minute
       const cookieStore = await cookies(); // Await `cookies()` to get the instance

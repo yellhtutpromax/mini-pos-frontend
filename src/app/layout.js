@@ -22,20 +22,20 @@ const geistMono = localFont({
 });
 
 export default function RootLayout({ children }) {
-  const pathname = usePathname();
-  const withoutAuthPaths = ['/', '/auth/login']; // exclude path
+  const pathname = usePathname()
+  const withoutAuthPaths = ['/', '/auth/login'] // exclude path
   const isWithoutAuth = withoutAuthPaths.includes(pathname)
-  const Layout = isWithoutAuth ? WithoutAuthLayout : AuthLayout;
+  const Layout = isWithoutAuth ? WithoutAuthLayout : AuthLayout
 
   return (
     <html lang="en" className='dark'>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}>
         <Providers>
-          <Layout metadata={metadata}>
+          <Layout metadata={metadata} >
             <Suspense fallback={<div>Layout stack ...</div>}>{children}</Suspense>
           </Layout>
         </Providers>
       </body>
     </html>
-  );
+  )
 }

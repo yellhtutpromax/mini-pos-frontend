@@ -3,6 +3,7 @@ import 'server-only'
 import { SignJWT, jwtVerify } from 'jose'
 import { NextResponse } from "next/server"
 import { cookies } from 'next/headers'
+import {usersDb} from "@/app/constants/constants";
 
 const secretKey = process.env.SESSION_SECRET || '0Z3ZEdzSHX0um9OeWkVONY6OI7fmNVUe4LZmBl0Z'
 if (!secretKey) throw new Error("SESSION_SECRET environment variable is not set.")
@@ -35,6 +36,8 @@ export async function createSession(user) {
     const accessToken = await encrypt({
       id: user.id,
       name: user.name, // etc ...
+      role: user.role,
+      path: user.path,
       expiresAt: accessExpireAt,
     })
     const refreshToken = await encrypt({
@@ -58,11 +61,11 @@ export async function createSession(user) {
       expires: refreshExpireAt,
       sameSite: 'lax',
       path: '/',
-    });
+    })
 
     return true
   } catch (error) {
-    console.error('Error creating session:', error);
+    console.error('Error creating session:', error)
   }
 }
 
@@ -109,11 +112,15 @@ export async function refreshAccessToken(refreshToken) {
     const payload = await decrypt(refreshToken);
     if (payload?.expiresAt && new Date(payload.expiresAt) > new Date()) {
       const accessExpireAt = new Date(Date.now() + 1 * 60 * 1000) // 1 minute
+      const user = usersDb.find(
+        (user) =>
+          user.refreshToken === refreshToken
+      )
       const newAccessToken = await encrypt({
-        id: payload.id,
-        name: payload.name,
-        role: payload.role,
-        path: payload.path,
+        id: user.id,
+        name: user.name,
+        role: user.role,
+        path: user.path,
         expiresAt: accessExpireAt,
       }); // New access token expires in 1 minute
       const cookieStore = await cookies(); // Await `cookies()` to get the instance
@@ -128,6 +135,16 @@ export async function refreshAccessToken(refreshToken) {
     }
   } catch (error) {
     console.error('Failed to refresh token:', error);
+  }
+  return null;
+}
+
+export const getUserData = async () => {
+  const cookieStore = await cookies(); // Await `cookies()` to get the instance
+  const accessToken = cookieStore.get('rats')?.value
+  if (accessToken) {
+    const user = usersDb.find((user) => user.refreshToken === refreshToken);
+    return user;
   }
   return null;
 }

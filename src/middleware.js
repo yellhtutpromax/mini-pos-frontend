@@ -23,7 +23,7 @@ export default async function middleware(request) {
   }
 
   console.log(session)
-  console.log('Middleware is running '+ path)
+  console.log('Middleware is running at'+ path)
   console.log('*********************************************')
 
   // console.log("Is Protected Route:", isProtectedRoute)

@@ -8,7 +8,6 @@ import AuthLayout from "./auth-layout";
 import WithoutAuthLayout from "./without-auth-layout";
 import { usePathname } from "next/navigation";
 import {Suspense} from "react";
-import {getAuthUser} from "@/app/hooks/auth";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,9 +30,9 @@ export default function RootLayout({ children }) {
     <html lang="en" className='dark'>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}>
         <Providers>
-          <Layout metadata={metadata} >
-            <Suspense fallback={<div>Layout stack ...</div>}>{children}</Suspense>
-          </Layout>
+            <Layout metadata={metadata} >
+              <Suspense fallback={<div>Layout stack ...</div>}>{children}</Suspense>
+            </Layout>
         </Providers>
       </body>
     </html>

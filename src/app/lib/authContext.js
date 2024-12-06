@@ -1,25 +1,34 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { getUserData} from "@/app/lib/session"
+'use client'
 
-const AuthContext = createContext(null)
+import { createContext, useContext, useEffect, useState } from 'react'
+import {getUserInfo} from "@/app/auth/login/actions";
 
-export const useAuth = () => useContext(AuthContext)
+const AuthContext = createContext()
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
+export function AuthProvider({ children }) {
+  const [loading, setLoading] = useState(false)
+  const [authUser, setAuthUser] = useState(null)
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const userData = await getUserData(); // Wait for the asynchronous function
-      setUser(userData); // Update the state
-    };
-
-    fetchUserData(); // Call the async function
-  }, [])
-
+    const fetchUser =  async (req, res, next) => {
+      setLoading(true)
+      const userInfo = await getUserInfo()
+      setLoading(false)
+      setAuthUser(userInfo)
+    }
+    fetchUser()
+  }, []);
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ authUser, setAuthUser, loading }}>
       {children}
     </AuthContext.Provider>
   )
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext)
+  if (!context) {
+    console.log('AuthContext is not defined. Ensure AuthProvider is rendered higher in the component tree.')
+  }
+  return context
 }

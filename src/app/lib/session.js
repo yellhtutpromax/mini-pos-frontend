@@ -114,8 +114,9 @@ export async function refreshAccessToken(refreshToken) {
       const accessExpireAt = new Date(Date.now() + 1 * 60 * 1000) // 1 minute
       const user = usersDb.find(
         (user) =>
-          user.refreshToken === refreshToken
+          user.id === payload.id
       )
+      console.log(user)
       const newAccessToken = await encrypt({
         id: user.id,
         name: user.name,
@@ -135,16 +136,6 @@ export async function refreshAccessToken(refreshToken) {
     }
   } catch (error) {
     console.error('Failed to refresh token:', error);
-  }
-  return null;
-}
-
-export const getUserData = async () => {
-  const cookieStore = await cookies(); // Await `cookies()` to get the instance
-  const accessToken = cookieStore.get('rats')?.value
-  if (accessToken) {
-    const user = usersDb.find((user) => user.refreshToken === refreshToken);
-    return user;
   }
   return null;
 }

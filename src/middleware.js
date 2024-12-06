@@ -12,45 +12,40 @@ export default async function middleware(request) {
   const isProtectedRoute = protectedRoutes.includes(path)
   const isPublicRoute = publicRoutes.includes(path)
 
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('rats')?.value;
-  const refreshToken = cookieStore.get('refresh_token')?.value;
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get('rats')?.value
+  const refreshToken = cookieStore.get('refresh_token')?.value
 
-  let session;
+  let session
 
   if (accessToken) {
-    session = await decrypt(accessToken);
+    session = await decrypt(accessToken)
+  }
+
+  // If access token is expired, attempt to refresh
+  if (!session?.id && refreshToken) {
+    await refreshAccessToken(refreshToken)
   }
 
   console.log(session)
   console.log('Middleware is running at'+ path)
   console.log('*********************************************')
 
-  // console.log("Is Protected Route:", isProtectedRoute)
-  // console.log("Is Public Route:", isPublicRoute)
-  // console.log("Cookie Value:", cookie)
-  // console.log("Session Value:", session)
-  // console.log("Middleware is running ....")
-  // console.log("Path", path)
-
-  // If access token is expired, attempt to refresh
-  if (!session?.id && refreshToken) {
-    await refreshAccessToken(refreshToken);
-  }
-
   // Redirect to /login if the user is not authenticated
-  if (isProtectedRoute && !session?.id) {
+  if (isProtectedRoute && !session?.id && !refreshToken) {
+    cookieStore.delete('rats')
+    cookieStore.delete('refresh_token')
     return NextResponse.redirect(new URL('/auth/login', request.nextUrl))
   }
 
-  // Redirect to /dashboard if the user is authenticated
+  // Redirect to specific route ( After user is authenticated )
   if (
     isPublicRoute &&
     session?.id &&
-    !request.nextUrl.pathname.startsWith('/dashboard')
+    !request.nextUrl.pathname.startsWith(`/${session.redirect_route}`)
   ) {
-    request.user = session; // add decrypt data to request
-    return NextResponse.redirect(new URL('/dashboard', request.nextUrl))
+    request.user = session // add decrypt data to request
+    return NextResponse.redirect(new URL(`/${session.redirect_route}`, request.nextUrl))
   }
 
   return NextResponse.next()

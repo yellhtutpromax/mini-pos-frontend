@@ -4,10 +4,11 @@ import { metadata } from "./metadata"; // server-side only
 import localFont from "next/font/local";
 import "./styles/globals.css";
 import {Providers} from "./providers";
-import AuthLayout from "./auth-layout";
-import WithoutAuthLayout from "./without-auth-layout";
 import { usePathname } from "next/navigation";
 import {Suspense} from "react";
+import AuthenticatedLayout from "./auth-layout";
+import WithoutAuthLayout from "./without-auth-layout";
+import {AuthProvider} from "@/app/lib/authContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,15 +25,17 @@ export default function RootLayout({ children }) {
   const pathname = usePathname()
   const withoutAuthPaths = ['/', '/auth/login'] // exclude path
   const isWithoutAuth = withoutAuthPaths.includes(pathname)
-  const Layout = isWithoutAuth ? WithoutAuthLayout : AuthLayout
+  const Layout = isWithoutAuth ? WithoutAuthLayout : AuthenticatedLayout
 
   return (
     <html lang="en" className='dark'>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}>
         <Providers>
+          <AuthProvider>
             <Layout metadata={metadata} >
               <Suspense fallback={<div>Layout stack ...</div>}>{children}</Suspense>
             </Layout>
+          </AuthProvider>
         </Providers>
       </body>
     </html>

@@ -6,6 +6,7 @@ const usersDb = [
     email: "yellhtut4@gmail.com",
     password: "admin123",
     role: "admin", // e.g., CEO, Sales Manager
+    redirect_route: "dashboard",
     path: ["dashboard", "members"],
     refreshToken: "storeId0349534kjkljgfkdjgkfdjgkjfdlgfdkg",
     permission: {

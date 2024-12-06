@@ -16,8 +16,6 @@ import {SearchIcon} from "./SearchIcon.jsx";
 import {logout} from "@/app/auth/login/actions";
 
 const Header = ({authUser}) => {
-  // console.log("----------------------")
-  // console.log(authUser)
   return (
     <Navbar className="shadow">
       <NavbarContent justify="start">
@@ -61,9 +59,9 @@ const Header = ({authUser}) => {
                 src: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
               }}
               className="transition-transform"
-              description="Admin"
+              description={authUser.role}
               // name={authUser.name || 'Name'}
-              name={'Name'}
+              name={authUser.name}
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="User Actions" variant="flat">

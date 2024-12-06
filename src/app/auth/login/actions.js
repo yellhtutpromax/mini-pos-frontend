@@ -1,11 +1,10 @@
 "use server"
 
 import Joi from "joi";
-import {createSession, deleteSession} from "@/app/lib/session";
+import {createSession, decrypt, deleteSession} from "@/app/lib/session";
 import {redirect} from "next/navigation"; // don't add try catch block when you are redirecting
-import {console} from "next/dist/compiled/@edge-runtime/primitives";
 import {usersDb} from "@/app/constants/constants";
-import {NextResponse} from "next/server";
+import {cookies} from "next/headers";
 
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -28,25 +27,18 @@ export async function login(email, password) {
   if (!isValid) {
     return false  // Return early if validation fails
   }
-  // console.log(isValid)
-  // console.log(errors)
-  // console.log('-----------------')
+
   const user = usersDb.find(
     (user) =>
       user.email === email &&
       user.password === password
   )
-  console.log(user)
   if (!user) {
-    console.log("Invalid credentials")
-    return false
+    return "Invalid credentials"
   }
   const result = await createSession(user)
-  if (result) {
-    // setError("") // Update the error state
-    // setLoading(false)
-    redirect("/dashboard")
-    // return result // Return the result of the signIn
+  if (result){
+    return user
   }
 }
 
@@ -56,3 +48,16 @@ export async function logout() {
       return redirect('/auth/login');
     }
 }
+
+export async function getUserInfo() {
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get('rats')?.value
+  const refreshToken = cookieStore.get('refresh_token')?.value
+  let session = null;
+
+  if (accessToken) {
+    session = await decrypt(accessToken)
+  }
+  return session
+}
+

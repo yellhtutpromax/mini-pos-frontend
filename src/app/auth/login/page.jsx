@@ -36,12 +36,14 @@ const Login = () => {
       return
     }
     const result = await login(credentials.email, credentials.password)
-    if (result){
-      // setAuthUser(result) // user data
-      redirect("/dashboard")
-    }
+    console.log(result)
+    // if (result){
+    //   // setAuthUser(result) // user data
+    //   redirect("/dashboard")
+    // }
     setError(result)
     setLoading(false)
+    return;
   }
 
   return (

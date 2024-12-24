@@ -38,6 +38,7 @@ export async function createSession(user) {
       name: user.name, // etc ...
       role: user.role,
       path: user.path,
+      redirect_route: user.redirect_route,
       expiresAt: accessExpireAt,
     })
     const refreshToken = await encrypt({
@@ -122,6 +123,7 @@ export async function refreshAccessToken(refreshToken) {
         name: user.name,
         role: user.role,
         path: user.path,
+        redirect_route: user.redirect_route,
         expiresAt: accessExpireAt,
       }); // New access token expires in 1 minute
       const cookieStore = await cookies(); // Await `cookies()` to get the instance

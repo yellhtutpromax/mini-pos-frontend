@@ -27,7 +27,7 @@ export default async function middleware(request) {
     await refreshAccessToken(refreshToken)
   }
 
-  console.log(session)
+  // console.log(session)
   console.log('Middleware is running at'+ path)
   console.log('*********************************************')
 

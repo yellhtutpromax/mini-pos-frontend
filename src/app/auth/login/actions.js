@@ -5,6 +5,8 @@ import {createSession, decrypt, deleteSession} from "@/app/lib/session";
 import {redirect} from "next/navigation"; // don't add try catch block when you are redirecting
 import {usersDb} from "@/app/constants/constants";
 import {cookies} from "next/headers";
+import {callApi} from "@/app/actions";
+import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
 
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -28,6 +30,20 @@ export async function login(email, password) {
     return false  // Return early if validation fails
   }
 
+  const callApiData = await callApi({
+    url: '/login',
+    method: 'POST',
+    isAuth: false,
+    data: {
+      email,
+      password
+    }
+    ,
+  })
+  console.log(process.env.NEXT_API_URL)
+  console.log(callApiData)
+  console.log('_____________________')
+  return callApiData
   const user = usersDb.find(
     (user) =>
       user.email === email &&

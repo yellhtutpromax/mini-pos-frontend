@@ -38,27 +38,36 @@ export async function callApi({
   // Create a base axios instance
   const axiosInstance = axios.create({
 
-    baseURL: 'http://127.0.0.1:8000/api', // Use base API URL from environment variables
+    baseURL: process.env.NEXT_PUBLIC_API_URL, // Use base API URL from environment variables
     timeout, // Configurable timeout
     headers: {
       ...(isAuth && { Authorization: `Bearer ${await getBearerToken()}` }), // Add Authorization header if isAuth is true
       ...headers, // Add additional custom headers
     },
   });
-
   try {
     // Perform the request with the provided options
-    const response = await axiosInstance.request({
+    const result = await axiosInstance.request({
       url, // Relative endpoint
       method: method.toUpperCase(), // Ensure the HTTP method is uppercase
       params, // Query parameters
-      data, // Request body for POST, PUT, etc.
+      data
     });
-    return response; // Return the API response
+    return {
+      status: result.status,
+      message: result.message, // Return a user-friendly error message
+      data: result.data.data
+    }
   } catch (error) {
-    console.log(`API call (${method}) error:`, error);
+    // console.log(`API call error : `, error);
+    // console.log('Error Response Data:', error.response?.data);
+    // console.log('Error Status:', error.response?.status);
+    // console.log('Error Message:', error.message);
+    // console.log({error: error.response?.data})
+    return {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message, // Return a user-friendly error message
+      data: error.response?.data
+    }
   }
 }
-
-
-

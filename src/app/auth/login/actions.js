@@ -25,36 +25,30 @@ function validateCredentials(email, password) {
 export async function login(email, password) {
 
   // Validate input
-  const { isValid, errors, value } = validateCredentials(email, password)
-  if (!isValid) {
-    return false  // Return early if validation fails
-  }
+  // const { isValid, errors, value } = validateCredentials(email, password)
+  // if (!isValid) {
+  //   return false  // Return early if validation fails
+  // }
 
-  const callApiData = await callApi({
-    url: '/login',
+  const loginResponse = await callApi({
+    url: 'auth/login',
     method: 'POST',
     isAuth: false,
     data: {
-      email,
-      password
-    }
-    ,
+      email: email,
+      password: password
+    },
   })
-  console.log(process.env.NEXT_API_URL)
-  console.log(callApiData)
-  console.log('_____________________')
-  return callApiData
-  const user = usersDb.find(
-    (user) =>
-      user.email === email &&
-      user.password === password
-  )
-  if (!user) {
-    return "Invalid credentials"
-  }
-  const result = await createSession(user)
-  if (result){
-    return user
+  if(loginResponse.status === 200){
+    loginResponse.data.user.access_token = loginResponse.data.access_token
+    // console.log(loginResponse.data.user)
+    // console.log('#$######################################$#')
+    const result = await createSession(loginResponse.data.user)
+    if (result){
+      return {status: 200, user:loginResponse.data.user}
+    }
+  }else{
+    return loginResponse; // Return all errors early if validation is fails
   }
 }
 

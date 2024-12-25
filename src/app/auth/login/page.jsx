@@ -6,16 +6,17 @@ import {redirect} from "next/navigation"; // don't add try catch block when you 
 import {login} from "@/app/auth/login/actions"
 import WithoutAuthLayout from "@/app/without-auth-layout"
 import {useAuth} from "@/app/lib/authContext";
-
+import {Alert} from "@nextui-org/alert";
 
 const Login = () => {
 
   const [credentials, setCredentials] = useState({
-    email: "yellhtut4@gmail.com",
-    password: "admin123",
+    email: "admin@yellhtut.com",
+    password: "password",
   })
-  const { setAuthUser } = useAuth()
-  const [error, setError] = useState("") // State to hold error messages
+  const {setAuthUser} = useAuth()
+  const [usernameError, setUsernameError] = useState("") // State to hold error messages
+  const [passwordError, setPasswordError] = useState("") // State to hold error messages
   const [loading, setLoading] = useState(false) // State to hold loading state
 
   const handleChange = (e) => {
@@ -28,22 +29,26 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     setLoading(true) // Update loading state to true
-    setError("")
+    setUsernameError("")
     e.preventDefault() // Prevent the default form submission
     if (!credentials.email || !credentials.password) {
-      setError("Please fill the required credentials")
+      setUsernameError("Please fill the required credentials")
       setLoading(false)
       return
     }
     const result = await login(credentials.email, credentials.password)
-    console.log(result)
-    // if (result){
-    //   // setAuthUser(result) // user data
-    //   redirect("/dashboard")
-    // }
-    setError(result)
+    // console.table(result)
+    if (result.status !== 200){
+      setUsernameError(result.data.errors.email[0])
+      // setPasswordError(result.data.errors.password[0])
+      setLoading(false)
+      return;
+    }
+    setAuthUser(result) // user data
+    setUsernameError('')
+    setPasswordError('')
     setLoading(false)
-    return;
+    redirect("/dashboard")
   }
 
   return (
@@ -51,6 +56,13 @@ const Login = () => {
       <div className="flex items-center justify-center min-h-screen bg-background ">
         {/*<Spinner   label="Loading..." color="warning" />*/}
         <div className="w-full max-w-md p-8 space-y-6 rounded shadow-2xl bg-themeSecondary border-3 border-slate-700">
+          {/*{usernameError &&*/}
+          {/*  <Alert*/}
+          {/*    color={"danger"}*/}
+          {/*    title={usernameError}*/}
+          {/*    isClosable={true}*/}
+          {/*  />*/}
+          {/*}*/}
           <div className="flex flex-col justify-center items-center py-5">
             <div className="text-2xl font-bold text-start text-white">Sign in to account</div>
             <div className="text-small opacity-50 text-start text-white">Enter your email & password to login</div>
@@ -66,8 +78,8 @@ const Login = () => {
                 label="Username"
                 value={credentials.email} // Accessing username from state
                 onChange={handleChange} // Use handleChange for input updates
-                isInvalid={error}
-                errorMessage={error}
+                isInvalid={usernameError}
+                errorMessage={usernameError}
               />
             </div>
             <div className="py-5">
@@ -78,10 +90,10 @@ const Login = () => {
                 className="w-full"
                 size="sm"
                 label="Password"
-                isInvalid={false}
-                errorMessage="Please enter a valid password"
                 value={credentials.password} // Accessing password from state
                 onChange={handleChange} // Use handleChange for input updates
+                isInvalid={passwordError}
+                errorMessage={passwordError}
               />
             </div>
             <Button
@@ -90,7 +102,7 @@ const Login = () => {
               size="sm"
               disabled={loading}
             >
-              <h2>{loading?'Loading':'Login'}</h2>
+              <h2>{loading ? 'Loading' : 'Login'}</h2>
             </Button>
             <div className="text-right pt-4">
               <a

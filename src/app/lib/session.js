@@ -37,7 +37,7 @@ export async function createSession(user) {
       id: user.id,
       name: user.name, // etc ...
       role: user.role,
-      path: user.path,
+      path: user.path, // path array
       redirect_route: user.redirect_route,
       expiresAt: accessExpireAt,
     })

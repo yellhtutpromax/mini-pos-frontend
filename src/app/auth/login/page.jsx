@@ -44,7 +44,7 @@ const Login = () => {
       setLoading(false)
       return;
     }
-    setAuthUser(result) // user data
+    setAuthUser(result.user) // user data
     setUsernameError('')
     setPasswordError('')
     setLoading(false)

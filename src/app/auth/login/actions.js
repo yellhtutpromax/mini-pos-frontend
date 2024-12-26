@@ -3,10 +3,8 @@
 import Joi from "joi";
 import {createSession, decrypt, deleteSession} from "@/app/lib/session";
 import {redirect} from "next/navigation"; // don't add try catch block when you are redirecting
-import {usersDb} from "@/app/constants/constants";
 import {cookies} from "next/headers";
 import {callApi} from "@/app/actions";
-import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
 
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -61,7 +59,7 @@ export async function logout() {
 
 export async function getUserInfo() {
   const cookieStore = await cookies()
-  const accessToken = cookieStore.get('rats')?.value
+  const accessToken = cookieStore.get('access_token')?.value
   const refreshToken = cookieStore.get('refresh_token')?.value
   let session = null;
 

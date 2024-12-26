@@ -13,7 +13,7 @@ export default async function middleware(request) {
   const isPublicRoute = publicRoutes.includes(path)
 
   const cookieStore = await cookies()
-  const accessToken = cookieStore.get('rats')?.value
+  const accessToken = cookieStore.get('access_token')?.value
   const refreshToken = cookieStore.get('refresh_token')?.value
 
   let session
@@ -24,16 +24,19 @@ export default async function middleware(request) {
 
   // If access token is expired, attempt to refresh
   if (!session?.id && refreshToken) {
-    await refreshAccessToken(refreshToken)
+    const response = await refreshAccessToken(refreshToken)
+    if (response.status === 401){
+      return NextResponse.redirect(new URL('/auth/login', request.nextUrl))
+    }
   }
 
-  console.log(session)
+  // console.log(session)
   console.log('Middleware is running at'+ path)
   console.log('*********************************************')
 
   // Redirect to /login if the user is not authenticated
   if (isProtectedRoute && !session?.id && !refreshToken) {
-    cookieStore.delete('rats')
+    cookieStore.delete('access_token')
     cookieStore.delete('refresh_token')
     return NextResponse.redirect(new URL('/auth/login', request.nextUrl))
   }

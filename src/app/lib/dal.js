@@ -5,7 +5,7 @@ import { decrypt } from '@/app/lib/session'
 import { redirect } from "next/navigation"
 
 export const verifySession = async () => {
-  const cookie = (await cookies()).get('rats')?.value
+  const cookie = (await cookies()).get('access_token')?.value
   if (!cookie) {
     redirect('/auth/login')
     return

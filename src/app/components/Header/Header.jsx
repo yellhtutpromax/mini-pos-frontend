@@ -16,6 +16,7 @@ import {SearchIcon} from "./SearchIcon.jsx";
 import {logout} from "@/app/auth/login/actions";
 
 const Header = ({authUser}) => {
+  console.log(authUser)
   return (
     <Navbar className="shadow">
       <NavbarContent justify="start">
@@ -60,8 +61,7 @@ const Header = ({authUser}) => {
               }}
               className="transition-transform"
               description={authUser.role}
-              // name={authUser.name || 'Name'}
-              name={authUser.name}
+              name={authUser.name || 'Name'}
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="User Actions" variant="flat">

@@ -104,7 +104,7 @@ export async function deleteSession() {
     cookieStore.delete('refresh_token')
     return true
   }catch (error) {
-    console.error("Session deletion error:", error)
+    console.log("Session deletion error:", error)
     return false
   }
 }
@@ -119,8 +119,8 @@ export async function refreshAccessToken(refreshToken) {
         isAuth: true,
       })
       console.log('refresh token generated')
+      console.log(user)
       const userIndex = user.data.user
-      console.log(userIndex)
       if(user.status === 401){
         // user token is unauthenticated or token invalid
         await deleteSession()

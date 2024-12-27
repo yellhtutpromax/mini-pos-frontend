@@ -25,7 +25,7 @@ export default async function middleware(request) {
   // If access token is expired, attempt to refresh
   if (!session?.id && refreshToken) {
     const response = await refreshAccessToken(refreshToken)
-    if (response.status === 401){
+    if (response.status === 401) {
       return NextResponse.redirect(new URL('/auth/login', request.nextUrl))
     }
   }

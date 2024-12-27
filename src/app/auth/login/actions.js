@@ -51,6 +51,12 @@ export async function login(email, password) {
 }
 
 export async function logout() {
+    // const response = await callApi({
+    //   url: 'auth/logout',
+    //   method: 'POST',
+    //   isAuth: true,
+    // })
+    // if (response.)
     const sessionDeleted = await deleteSession();
     if (sessionDeleted) {
       return redirect('/auth/login');

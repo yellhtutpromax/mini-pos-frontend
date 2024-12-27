@@ -60,11 +60,11 @@ export async function callApi({
   } catch (error) {
     // console.log(`API call error : `, error)
     // console.log('Error Response Data:', error.response?.data)
-    // console.log('Error Status:', error.response?.status)
+    console.log('Error Status:', error.response?.status)
     // console.log('Error Message:', error.message)
     // console.log({error: error.response?.data})
     return {
-      status: error.response?.status,
+      status: error.response?.status ?? 500,
       message: error.response?.data?.message || error.message, // Return a user-friendly error message
       data: error.response?.data
     }

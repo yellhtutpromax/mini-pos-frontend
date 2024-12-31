@@ -16,6 +16,7 @@ import {SearchIcon} from "./SearchIcon.jsx";
 import {logout} from "@/app/auth/login/actions";
 
 const Header = ({authUser}) => {
+  console.clear()
   console.log(authUser)
   return (
     <Navbar className="shadow">

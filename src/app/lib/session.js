@@ -113,21 +113,16 @@ export async function refreshAccessToken(refreshToken) {
   try {
     const payload = await decrypt(refreshToken)
     if (payload?.expiresAt && new Date(payload.expiresAt) > new Date()) {
-
       const user = await callApi({
         url: 'profile',
         isAuth: true,
       })
-      console.log('refresh token generated')
-      console.log(user)
-      const userIndex = user.data.user
-      if(user.status === 401){
+      if(user.status === 401 || user.status === 500){
         // user token is unauthenticated or token invalid
-        await deleteSession()
-        console.log(user)
         return user
       }
-      console.log('  ****** Server Session End ******  ')
+
+      const userIndex = user.data.user
       const accessExpireAt = new Date(Date.now() + 1 * 60 * 1000) // 2 minute
       const newAccessToken = await encrypt({
         id: userIndex.id,
@@ -148,7 +143,7 @@ export async function refreshAccessToken(refreshToken) {
       return newAccessToken // Return the new access token
     }
   } catch (error) {
-    console.error('Failed to refresh token:', error)
+    console.log('Failed to refresh token:', error)
   }
   return null
 }

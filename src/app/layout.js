@@ -23,7 +23,7 @@ const geistMono = localFont({
 
 export default function RootLayout({ children }) {
   const pathname = usePathname()
-  const withoutAuthPaths = ['/', '/auth/login'] // exclude path
+  const withoutAuthPaths = ['/', '/auth/login', '/system-health-check'] // exclude path
   const isWithoutAuth = withoutAuthPaths.includes(pathname)
   const Layout = isWithoutAuth ? WithoutAuthLayout : AuthenticatedLayout
 

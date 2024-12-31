@@ -4,6 +4,7 @@ import axios   from "axios"
 import { cookies } from 'next/headers'
 import {decrypt} from "@/app/lib/session"
 import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss"
+import {redirect} from "next/navigation";
 
 export async function getBearerToken() {
   // Get cookie
@@ -60,9 +61,13 @@ export async function callApi({
   } catch (error) {
     // console.log(`API call error : `, error)
     // console.log('Error Response Data:', error.response?.data)
-    console.log('Error Status:', error.response?.status)
+    // console.log('Error Status:', error.response?.status)
     // console.log('Error Message:', error.message)
     // console.log({error: error.response?.data})
+    if (error.response?.status === undefined)
+    {
+      redirect('/system-health-check')
+    }
     return {
       status: error.response?.status ?? 500,
       message: error.response?.data?.message || error.message, // Return a user-friendly error message

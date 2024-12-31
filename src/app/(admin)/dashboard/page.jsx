@@ -1,6 +1,7 @@
 'use client'
 import React, {useEffect} from 'react'
 import getProfileData from "@/app/(admin)/dashboard/actions"
+import {ThemeInput} from "@/app/components/Form/Input/Input";
 // export const metadata = {
 //   title: 'Dashboard ',
 //   description: 'Welcome to your dashboard, where you can manage your application.',
@@ -16,11 +17,12 @@ const Dashboard =  () => {
         console.error('Error fetching profile data:', error)
       }
     }
-    console.table(fetchProfile())
+    fetchProfile()
   }, [])
   return (
     <div className="bg-background">
-
+      <ThemeInput
+      />
     </div>
   )
 }

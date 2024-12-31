@@ -1,16 +1,21 @@
 import { NextResponse } from 'next/server'
-import {decrypt, refreshAccessToken} from '@/app/lib/session'
+import {decrypt, deleteSession, refreshAccessToken} from '@/app/lib/session'
 import { cookies } from 'next/headers'
 
 // 1. Specify protected and public routes
 const protectedRoutes = ['/dashboard','/members']
-const publicRoutes = ['/auth/login', '/signup', '/']
+const publicRoutes = ['/auth/login', '/signup', '/system-health-check']
 
 export default async function middleware(request) {
   // 2. Check if the current route is protected or public
   const path = request.nextUrl.pathname
   const isProtectedRoute = protectedRoutes.includes(path)
   const isPublicRoute = publicRoutes.includes(path)
+
+  console.log('Path:', path)
+  console.log('Is Protected Route:', isProtectedRoute)
+  console.log('Is Public Route:', isPublicRoute)
+
 
   const cookieStore = await cookies()
   const accessToken = cookieStore.get('access_token')?.value
@@ -26,18 +31,22 @@ export default async function middleware(request) {
   if (!session?.id && refreshToken) {
     const response = await refreshAccessToken(refreshToken)
     if (response.status === 401) {
+      await deleteSession()
       return NextResponse.redirect(new URL('/auth/login', request.nextUrl))
+    }else if (response.status === 500) {
+      if (path !== '/system-health-check') {
+        console.log('Redirecting to system-health-check...')
+        return NextResponse.redirect(new URL('/system-health-check', request.nextUrl))
+      }
     }
   }
 
-  // console.log(session)
-  console.log('Middleware is running at'+ path)
+  console.log('Middleware is running at '+ path)
   console.log('*********************************************')
 
   // Redirect to /login if the user is not authenticated
   if (isProtectedRoute && !session?.id && !refreshToken) {
-    cookieStore.delete('access_token')
-    cookieStore.delete('refresh_token')
+    await deleteSession()
     return NextResponse.redirect(new URL('/auth/login', request.nextUrl))
   }
 

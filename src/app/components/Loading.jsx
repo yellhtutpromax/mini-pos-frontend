@@ -4,7 +4,10 @@ export const Loading = () => {
   return (
     <>
       <div className="flex justify-center items-center h-screen">
-        <Spinner label="Loading..." color="primary" />
+        <Spinner
+          label={<span className="text-white">Loading...</span>}
+                 color="white"
+        />
       </div>
     </>
   )

@@ -64,12 +64,13 @@ export async function callApi({
     // console.log('Error Status:', error.response?.status)
     // console.log('Error Message:', error.message)
     // console.log({error: error.response?.data})
-    if (error.response?.status === undefined)
-    {
-      redirect('/system-health-check')
-    }
+    // if (error.response?.status === undefined)
+    // {
+    //   console.log('Redirecting to system-health-check...')
+    //   redirect('/system-health-check')
+    // }
     return {
-      status: error.response?.status ?? 500,
+      status: error.response?.status ?? 503,
       message: error.response?.data?.message || error.message, // Return a user-friendly error message
       data: error.response?.data
     }

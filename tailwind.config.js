@@ -16,8 +16,12 @@ const config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         themeBg: "var(--theme-bg)",
-        themeSecondary: "var(--blue-gray)",
+        themeSecondary: "var(--theme-secondary)",
+        textGray: "var(--text-gray)",
       },
+      width: {
+        themeContainer: "var(--theme-container)"
+      }
     },
   },
   darkMode: "class",

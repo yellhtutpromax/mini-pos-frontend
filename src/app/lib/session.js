@@ -117,11 +117,10 @@ export async function refreshAccessToken(refreshToken) {
         url: 'profile',
         isAuth: true,
       })
-      if(user.status === 401 || user.status === 500){
+      if(user.status === 401 || user.status === 503){
         // user token is unauthenticated or token invalid
         return user
       }
-
       const userIndex = user.data.user
       const accessExpireAt = new Date(Date.now() + 1 * 60 * 1000) // 2 minute
       const newAccessToken = await encrypt({

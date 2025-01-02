@@ -55,7 +55,7 @@ const Login = () => {
     <WithoutAuthLayout>
       <div className="flex items-center justify-center min-h-screen bg-background ">
         {/*<Spinner   label="Loading..." color="warning" />*/}
-        <div className="w-full max-w-md p-8 space-y-6 rounded shadow-2xl bg-themeSecondary border-3 border-slate-700">
+        <div className="w-full max-w-md p-8 space-y-6 rounded shadow-2xl border-3 border-slate-700">
           {/*{usernameError &&*/}
           {/*  <Alert*/}
           {/*    color={"danger"}*/}

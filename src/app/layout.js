@@ -10,8 +10,8 @@ import AuthenticatedLayout from "./auth-layout";
 import WithoutAuthLayout from "./without-auth-layout";
 import {AuthProvider} from "@/app/lib/authContext";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+const montserratMedium = localFont({
+  src: "./fonts/Montserrat-Medium.ttf",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en" className='dark'>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}>
+      <body className={`${montserratMedium.variable} ${geistMono.variable} antialiased bg-foreground min-h-screen`}>
         <Providers>
           <AuthProvider>
             <Layout metadata={metadata} >

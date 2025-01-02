@@ -12,9 +12,9 @@ export default async function middleware(request) {
   const isProtectedRoute = protectedRoutes.includes(path)
   const isPublicRoute = publicRoutes.includes(path)
 
-  console.log('Path:', path)
-  console.log('Is Protected Route:', isProtectedRoute)
-  console.log('Is Public Route:', isPublicRoute)
+  // console.log('Path:', path)
+  // console.log('Is Protected Route:', isProtectedRoute)
+  // console.log('Is Public Route:', isPublicRoute)
 
 
   const cookieStore = await cookies()
@@ -33,9 +33,8 @@ export default async function middleware(request) {
     if (response.status === 401) {
       await deleteSession()
       return NextResponse.redirect(new URL('/auth/login', request.nextUrl))
-    }else if (response.status === 500) {
+    }else if (response.status === 503) {
       if (path !== '/system-health-check') {
-        console.log('Redirecting to system-health-check...')
         return NextResponse.redirect(new URL('/system-health-check', request.nextUrl))
       }
     }

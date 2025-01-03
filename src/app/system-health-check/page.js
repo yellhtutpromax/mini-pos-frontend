@@ -14,12 +14,12 @@ export default function systemHealthCheck() {
             width={40}
           />
           <div className="flex flex-col">
-            <p className="text-md">Network Error: </p>
+            <p className="text-md text-white">Network Error: </p>
             <p className="text-small text-default-500">Endpoint issue found</p>
           </div>
         </CardHeader>
         <Divider />
-        <CardBody className="py-12">
+        <CardBody className="py-12 text-white">
           <p>The API server might be offline due to maintenance, unexpected crashes, or hosting issues.</p>
         </CardBody>
         <Divider />

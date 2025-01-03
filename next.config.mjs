@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: false,
   experimental: {
     serverActions: {
       // allowedOrigins: ['my-proxy.com', '*.my-proxy.com'],

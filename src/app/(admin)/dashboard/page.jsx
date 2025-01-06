@@ -1,6 +1,6 @@
 'use client'
 import React, {useEffect} from 'react'
-import {Button, Card, CardBody, CardFooter, CardHeader, Divider} from "@nextui-org/react";
+import {Progress, Button, Card, CardBody, CardFooter, CardHeader, Divider} from "@nextui-org/react";
 import getProfileData from "@/app/(admin)/dashboard/actions"
 import {ThemeInput} from "@/app/components/Form/Input/ThemeInput";
 
@@ -21,8 +21,8 @@ const Dashboard =  () => {
     fetchProfile()
   }, [])
   return (
-    <div className="flex items-center justify-center bg-foreground mt-20">
-      <Card className="w-1/4 bg-background">
+    <div className="flex items-center justify-center bg-foreground mt-20 no">
+      <Card className="w-1/4 bg-background ">
         <CardHeader className="p-4">
           <div className="text-white text-xl">Create User</div>
         </CardHeader>
@@ -47,6 +47,7 @@ const Dashboard =  () => {
           <Button className="bg-[#242745] btn-sm" radius="full">Cancel</Button>
           <Button className="bg-themeSecondary btn-sm ml-5" radius="full">Create</Button>
         </CardFooter>
+        <Progress isIndeterminate className="" size="sm" />
       </Card>
     </div>
   )

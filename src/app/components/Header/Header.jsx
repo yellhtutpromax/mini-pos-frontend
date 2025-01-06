@@ -2,6 +2,7 @@ import {
   Divider
 } from "@nextui-org/react";
 import {Logo} from "./Logo.jsx";
+import {Sidebar} from "@/app/components/General/Sidebar";
 
 const Header = ({authUser}) => {
   // console.clear()
@@ -9,8 +10,10 @@ const Header = ({authUser}) => {
   return (
     <>
       <header className="bg-background">
-        <div className="w-themeContainer mx-auto"  style={{height: 80}}>
-
+        <div className="w-themeContainer mx-auto h-20">
+          <div className="flex">
+            <div className=""></div>
+          </div>
         </div>
       </header>
       <Divider/>

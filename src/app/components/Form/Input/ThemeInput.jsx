@@ -38,9 +38,9 @@ export const ThemeInput = ({
         disabled={disabled}
         isRequired={isRequired}
         isInvalid={isInvalid}
-        variant="bordered"
         errorMessage={errorMessage}
         placeholder={placeholder}
+        variant="bordered"
       />
     </>
   )

@@ -36,6 +36,38 @@ const usersDb = [
   },
 ];
 
+const navDb = [
+  {
+    id: 1,
+    name: "Dashboard",
+    route: "dashboard",
+    iconPath: "dashboard.svg",
+    children: [],
+  },
+  {
+    id: 2,
+    name: "Roles ",
+    route: "membership",
+    iconPath: "membership.svg",
+    children: [],
+  },
+  {
+    id: 3,
+    name: "Accounts",
+    route: "members",
+    iconPath: "members.svg",
+    children: [],
+  },
+  {
+    id: 4,
+    name: "Settings",
+    route: "settings",
+    iconPath: "settings.svg",
+    children: [],
+  },
+];
+
 module.exports = {
   usersDb,
+  navDb
 };

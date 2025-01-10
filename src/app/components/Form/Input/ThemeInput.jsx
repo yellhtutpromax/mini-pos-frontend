@@ -26,7 +26,7 @@ export const ThemeInput = ({
         type={type}
         className={`${customClassName}`}  // You can still add a default class
         classNames={{
-          inputWrapper: "h-12 mt-1 text-sm bg-background dark:bg-foreground text-white text-2xl border border-zinc-800",
+          inputWrapper: "h-12 mt-1 text-sm bg-background dark:bg-foreground text-white text-2xl border border-themeBorder",
           label: "text-white !important"
         }}
         id={id}

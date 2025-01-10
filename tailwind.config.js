@@ -18,6 +18,10 @@ const config = {
         themeBg: "var(--theme-bg)",
         themeSecondary: "var(--theme-secondary)",
         textGray: "var(--text-gray)",
+        navActive: "var(--nav-active-color)",
+      },
+      borderColor: {
+        themeBorder: "var(--theme-border)", // Using CSS variables
       },
       width: {
         themeContainer: "var(--theme-container)"

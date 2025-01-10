@@ -39,6 +39,7 @@ export async function createSession(user) {
     const accessToken = await encrypt({
       id: user.id,
       name: user.name, // etc ...
+      email: user.email,
       role: user.role,
       path: user.path, // path array
       redirect_route: user.redirect_route,
@@ -126,6 +127,7 @@ export async function refreshAccessToken(refreshToken) {
       const newAccessToken = await encrypt({
         id: userIndex.id,
         name: userIndex.name,
+        email: userIndex.email,
         role: userIndex.role,
         path: userIndex.path,
         redirect_route: userIndex.redirect_route,

@@ -7,12 +7,16 @@
   --foreground: #171829;
   --theme-secondary: #5C61F2;
   --theme-container: 95%;
+  --theme-border: #242745;
+  --nav-active-color: #5C61F21A;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #171829;
     --foreground: #131321;
+    --theme-border: #242745;
+    --nav-active-color: #5C61F21A;
   }
 }
 

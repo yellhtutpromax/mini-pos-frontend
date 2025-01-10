@@ -64,6 +64,7 @@ const Header = ({authUser}) => {
               description={authUser.role}
               name={authUser.name || 'Name'}
             />
+            classNames={classNames}
           </DropdownTrigger>
           <DropdownMenu aria-label="User Actions" variant="flat">
             <DropdownItem key="settings">Settings</DropdownItem>

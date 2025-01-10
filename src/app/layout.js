@@ -33,7 +33,9 @@ export default function RootLayout({ children }) {
         <Providers>
           <AuthProvider>
             <Layout metadata={metadata} >
-              <Suspense fallback={<div>Layout stack ...</div>}>{children}</Suspense>
+              <Suspense fallback={<div>Layout stack ...</div>}>
+                {children}
+              </Suspense>
             </Layout>
           </AuthProvider>
         </Providers>

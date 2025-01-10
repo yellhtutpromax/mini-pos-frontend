@@ -1,53 +1,30 @@
 'use client'
 import {useState} from "react";
-import {Card, CardHeader, CardBody, CardFooter, Avatar, Button} from "@nextui-org/react";
+import {Card, Table} from "@nextui-org/react";
+import {Image} from "@nextui-org/image";
+import ThemeDataTable from "@/app/components/Table/ThemeDataTable";
 
 const Member = () => {
   const [isFollowed, setIsFollowed] = useState(false);
+  console.log('Members')
   return (
     <>
-      <div className="flex items-center justify-center max-h-screen bg-background">
-        <Card className="max-w-[340px]">
-          <CardHeader className="justify-between">
-            <div className="flex gap-5">
-              <Avatar isBordered radius="full" size="md" src="https://nextui.org/avatars/avatar-1.png" />
-              <div className="flex flex-col gap-1 items-start justify-center">
-                <h4 className="text-small font-semibold leading-none text-default-600">Zoey Lang</h4>
-                <h5 className="text-small tracking-tight text-default-400">@zoeylang</h5>
-              </div>
-            </div>
-            <Button
-              className={isFollowed ? "bg-transparent text-foreground border-default-200" : ""}
-              color="primary"
-              radius="full"
-              size="sm"
-              variant={isFollowed ? "bordered" : "solid"}
-              onPress={() => setIsFollowed(!isFollowed)}
-            >
-              {isFollowed ? "Unfollow" : "Follow"}
-            </Button>
-          </CardHeader>
-          <CardBody className="px-3 py-0 text-small text-default-400">
-            <p>
-              Frontend developer and UI/UX enthusiast. Join me on this coding adventure!
-            </p>
-            <span className="pt-2">
-          #FrontendWithZoey
-          <span className="py-2" aria-label="computer" role="img">
-            💻
-          </span>
-        </span>
-          </CardBody>
-          <CardFooter className="gap-3">
-            <div className="flex gap-1">
-              <p className="font-semibold text-default-400 text-small">4</p>
-              <p className=" text-default-400 text-small">Following</p>
-            </div>
-            <div className="flex gap-1">
-              <p className="font-semibold text-default-400 text-small">97.1K</p>
-              <p className="text-default-400 text-small">Followers</p>
-            </div>
-          </CardFooter>
+      <div className="flex items-center justify-between h-10 mb-5">
+        <div className="text-2xl font-bold">Members</div>
+        <a href="" className="flex justify-between items-center w-52">
+          <Image
+            className="w-5 h-5"
+            alt="Plus sign"
+            src={`/icons/plus.svg`}
+          />
+          <div className="text-themeSecondary text-base font-semibold">Register new member</div>
+        </a>
+      </div>
+      <div className="h-[calc(100vh-5rem-170px)]">
+        <Card className="w-full h-full border border-themeBorder bg-foreground">
+          <div className="p-5">
+            <ThemeDataTable/>
+          </div>
         </Card>
       </div>
     </>

@@ -33,7 +33,7 @@ export async function createSession(user) {
   try {
 
     const cookieStore = await cookies() // Await `cookies()` to get the instance
-    const accessExpireAt = new Date(Date.now() + 1 * 60 * 1000) // 2 minute
+    const accessExpireAt = new Date(Date.now() + 30 * 60 * 1000) // 30 minute
     const refreshExpireAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
 
     const accessToken = await encrypt({

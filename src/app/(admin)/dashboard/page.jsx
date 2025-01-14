@@ -34,11 +34,11 @@ const Dashboard =  () => {
       <div className="flex items-center justify-between h-10 mb-5">
         <div className="text-2xl font-bold">Dashboard</div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 gap-10">
+      <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {cards.map((card) => (
           <Card
             key={card.id}
-            className="h-36 bg-background border border-themeBorder "
+            className="min-h-36 bg-background border border-themeBorder "
           >
             <div className="p-5 flex-col items-center justify-between">
               <div className="text-lg text-themeSecondary font-semibold">{card.title}</div>

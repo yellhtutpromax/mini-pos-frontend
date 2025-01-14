@@ -4,11 +4,30 @@ import { Divider } from "@nextui-org/react";
 import { Image } from "@nextui-org/image";
 import { navDb } from "@/app/constants/constants";
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { NavsLoop } from "@/app/components/General/NavsLoop";
 
 export const Sidebar = () => {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const sidebarRef = useRef(null);
+
+  // Close sidebar if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setIsMenuOpen(false); // Close the sidebar if clicked outside
+      }
+    };
+
+    // Add event listener
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -19,79 +38,35 @@ export const Sidebar = () => {
         </div>
         <Divider className="w-11/12 m-auto" />
         <div className="nav-container mt-4">
-          <a
-            key={'sidebar'}
-            className={`flex items-center justify-between w-56 mx-auto h-12 px-4 rounded-lg mb-2 cursor-pointer transition`}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 flex items-center justify-center">
-                <Image
-                  className="w-9 h-9"
-                  alt={'Sidebar'}
-                  src={`/icons/nav-icons/sidebar.svg`}
-                />
-              </div>
-              <span className={`text-gray-500 text-sm`}>
-                    Close Sidebar
-              </span>
-            </div>
-          </a>
-          <Divider className="w-11/12 m-auto mb-3" />
-          {navDb.map((navItem) => {
-            const isActive = pathname === `/${navItem.route}`;
-            return (
-              // <>
-                <a
-                  key={navItem.id}
-                  href={`/${navItem.route}`}
-                  className={`flex items-center justify-between w-56 mx-auto h-12 px-4 rounded-lg mb-4 cursor-pointer transition ${
-                    isActive ? "bg-navActive" : "hover:bg-navActive"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 flex items-center justify-center">
-                      <Image
-                        className="w-9 h-9"
-                        alt={navItem.name}
-                        src={`/icons/nav-icons/${navItem.iconPath}`}
-                      />
-                    </div>
-                    <span className={`${isActive ? "text-white" : "text-gray-500"} text-sm font-semibold`}>
-                    {navItem.name}
-                  </span>
-                  </div>
-                </a>
-              // </>
-            );
-          })}
+          <NavsLoop />
         </div>
       </div>
 
       {/* Mobile Hamburger Menu */}
-      <div className="lg:hidden bg-white h-20">
+      <div className="lg:hidden flex items-center justify-center h-20 z-10 absolute">
         <button
-          className="p-4 focus:outline-none"
+          className={`p-4 focus:outline-none ml-2 ${isMenuOpen ? 'hidden' : ''}`}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <div className="space-y-2">
-            <div className="w-6 h-0.5 bg-black"></div>
-            <div className="w-6 h-0.5 bg-black"></div>
-            <div className="w-6 h-0.5 bg-black"></div>
+            <div className="w-9 h-0.5 rounded bg-white"></div>
+            <div className="w-9 h-0.5 rounded bg-white"></div>
+            <div className="w-9 h-0.5 rounded bg-white"></div>
           </div>
         </button>
 
         <div
-          className={`fixed top-0 left-0 w-64 h-screen bg-yellow und z-50 transition-transform duration-300 ease-in-out ${
+          ref={sidebarRef}
+          className={`fixed top-0 left-0 w-64 h-screen bg-yellow z-50 transition-transform duration-300 ease-in-out ${
             isMenuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          {/* Cancel Button */}
-          <button
-            className="absolute top-4 right-4 p-2 text-white bg-gray-700 rounded-full focus:outline-none"
-            onClick={() => setIsMenuOpen(false)}
-          >✕</button>
           <div className="flex items-center justify-center h-20">
             <div className="text-4xl font-bold">MESOFT</div>
+          </div>
+          <Divider className="w-11/12 m-auto" />
+          <div className="w-64 h-screen bg-background overflow-hidden z-10 absolute">
+            <NavsLoop />
           </div>
         </div>
       </div>

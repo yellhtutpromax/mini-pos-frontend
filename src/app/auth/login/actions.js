@@ -66,7 +66,7 @@ export async function logout() {
 export async function getUserInfo() {
   const cookieStore = await cookies()
   const accessToken = cookieStore.get('access_token')?.value
-  const refreshToken = cookieStore.get('refresh_token')?.value
+  // const refreshToken = cookieStore.get('refresh_token')?.value
   let session = null;
 
   if (accessToken) {

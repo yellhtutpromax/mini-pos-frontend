@@ -46,14 +46,14 @@ const navDb = [
   },
   {
     id: 2,
-    name: "Roles ",
+    name: "Membership ",
     route: "membership",
     iconPath: "membership.svg",
     children: [],
   },
   {
     id: 3,
-    name: "Accounts",
+    name: "Members",
     route: "members",
     iconPath: "members.svg",
     children: [],

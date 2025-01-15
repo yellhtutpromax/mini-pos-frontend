@@ -1,13 +1,11 @@
 'use client';
 
 import { Divider } from "@nextui-org/react";
-import { Image } from "@nextui-org/image";
-import { navDb } from "@/app/constants/constants";
 import { usePathname } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
+import { memo, useState, useEffect, useRef } from 'react';
 import { NavsLoop } from "@/app/components/General/NavsLoop";
 
-export const Sidebar = () => {
+export const Sidebar = memo(() => {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const sidebarRef = useRef(null);
@@ -27,6 +25,7 @@ export const Sidebar = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+    console.log('sidebar is rendered')
   }, []);
 
   return (
@@ -72,4 +71,4 @@ export const Sidebar = () => {
       </div>
     </>
   );
-};
+});

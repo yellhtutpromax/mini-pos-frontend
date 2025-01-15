@@ -7,6 +7,7 @@ const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false)
+  const [isDecrypt, setIsDecrypt] = useState(true)
   const [authUser, setAuthUser] = useState(null)
 
   useEffect(() => {
@@ -16,10 +17,10 @@ export function AuthProvider({ children }) {
       setLoading(false)
       setAuthUser(userInfo)
     }
-    fetchUser()
+    if(isDecrypt)fetchUser()
   }, []);
   return (
-    <AuthContext.Provider value={{ authUser, setAuthUser, loading }}>
+    <AuthContext.Provider value={{ authUser, setAuthUser, loading, isDecrypt }}>
       {children}
     </AuthContext.Provider>
   )

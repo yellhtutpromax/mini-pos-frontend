@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 
 // 1. Specify protected and public routes
 const protectedRoutes = ['/dashboard','/members']
-const publicRoutes = ['/auth/login', '/signup', '/system-health-check']
+const publicRoutes = ['/auth/login', '/signup', '/unauthorized', '/system-health-check']
 
 export default async function middleware(request) {
   // 2. Check if the current route is protected or public
@@ -16,7 +16,6 @@ export default async function middleware(request) {
   // console.log('Is Protected Route:', isProtectedRoute)
   // console.log('Is Public Route:', isPublicRoute)
 
-
   const cookieStore = await cookies()
   const accessToken = cookieStore.get('access_token')?.value
   const refreshToken = cookieStore.get('refresh_token')?.value
@@ -25,6 +24,9 @@ export default async function middleware(request) {
 
   if (accessToken) {
     session = await decrypt(accessToken)
+    // if(!session.path.includes(path) && path !== '/unauthorized'){
+    //   return NextResponse.redirect(new URL('/unauthorized', request.nextUrl))
+    // }
   }
 
   // If access token is expired, attempt to refresh

@@ -5,7 +5,7 @@ const Membership = () => {
   return (
     <>
       <div className="flex items-center justify-center max-h-screen ">
-        <div className="text-2xl">This is members list</div>
+        <div className="text-2xl">This is Membership</div>
       </div>
     </>
   )

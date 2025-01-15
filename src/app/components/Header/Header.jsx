@@ -1,11 +1,12 @@
+import React from "react";
 import {Image} from "@nextui-org/image";
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem} from "@nextui-org/react"
 import {logout} from "@/app/auth/login/actions";
 
-
-const Header = ({authUser}) => {
+const Header = React.memo(({authUser}) => {
   console.clear()
   console.table(authUser)
+  // console.log('Header is rendered')
   return (
     <>
       <header className="bg-background">
@@ -35,8 +36,8 @@ const Header = ({authUser}) => {
                       src="/icons/user_default.png"
                     />
                   </DropdownTrigger>
-                  <DropdownMenu aria-label="Profile Actions" variant="flat">
-                    <DropdownItem key="profile" className="h-14 gap-2 border border-themeBorder">
+                  <DropdownMenu className="bg-background border-0" aria-label="Profile Actions" variant="flat">
+                    <DropdownItem key="profile" className="h-14 gap-2">
                       <p className="font-semibold">Signed in as ( {authUser.name} )</p>
                       <p className="font-semibold">{authUser.email}</p>
                     </DropdownItem>
@@ -55,6 +56,6 @@ const Header = ({authUser}) => {
       {/*<Divider/>*/}
     </>
   );
-}
+});
 
 export default Header

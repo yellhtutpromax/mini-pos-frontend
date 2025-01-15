@@ -43,6 +43,7 @@ export default async function middleware(request) {
   }
 
   console.log('Middleware is running at '+ path)
+  console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
   console.log('*********************************************')
 
   // Redirect to /login if the user is not authenticated

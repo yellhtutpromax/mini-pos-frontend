@@ -1,10 +1,12 @@
 "use server"
 
 import Joi from "joi";
+import mysqlDb from "@/app/lib/database/mysql";
+import bcrypt from 'bcryptjs'; // Make sure to install bcryptjs package
 import {createSession, decrypt, deleteSession} from "@/app/lib/session";
 import {redirect} from "next/navigation"; // don't add try catch block when you are redirecting
 import {cookies} from "next/headers";
-import {callApi} from "@/app/actions";
+import {errorResponse, successResponse} from "@/app/utils/apiFormat";
 
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -20,33 +22,38 @@ function validateCredentials(email, password) {
   return { isValid: true, value }
 }
 
-export async function login(email, password) {
-
-  // Validate input
-  // const { isValid, errors, value } = validateCredentials(email, password)
-  // if (!isValid) {
-  //   return false  // Return early if validation fails
-  // }
-
-  const loginResponse = await callApi({
-    url: 'auth/login',
-    method: 'POST',
-    isAuth: false,
-    data: {
-      email: email,
-      password: password
-    },
-  })
-  if(loginResponse.status === 200){
-    loginResponse.data.user.access_token = loginResponse.data.access_token
-    // console.log(loginResponse.data.user)
-    // console.log('#$######################################$#')
-    const result = await createSession(loginResponse.data.user)
-    if (result){
-      return {status: 200, user:loginResponse.data.user}
+export async function login(credentials) {
+  try {
+    const {email, password} = credentials;
+    const [rows] = await mysqlDb.query("SELECT * FROM users WHERE email = ?", [email]);
+    const user = rows[0]; // user data
+    console.log(user);
+    if (!user) {
+      return errorResponse({
+        status: 404,
+        message: 'Credentials not found',
+      });
     }
-  }else{
-    return loginResponse; // Return all errors early if validation is fails
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return errorResponse({
+        status: 422,
+        message: 'Invalid password'
+      });
+    }
+    const response = await createSession(user) // Create a new session
+    if (response){
+      const { password, refresh_token, ...userData } = user; // Exclude password and refresh_token
+      return successResponse({
+        status: 200,
+        message: 'Login successful',
+        data: userData,
+      })
+    }
+  }catch (error) {
+    console.log('Error during login:', error.message); // Log the error for debugging
+    // Optionally, you can rethrow the error or return a custom response
+    return { error: error.message || 'An error occurred during login' };
   }
 }
 

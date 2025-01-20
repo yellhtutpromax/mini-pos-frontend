@@ -30,32 +30,33 @@ const Login = () => {
   const handleSubmit = async (e) => {
     setLoading(true) // Update loading state to true
     setUsernameError("")
+    setPasswordError("")
     e.preventDefault() // Prevent the default form submission
     if (!credentials.email || !credentials.password) {
       setUsernameError("Please fill the required credentials")
       setLoading(false)
       return
     }
-    const result = await login(credentials.email, credentials.password)
-    // console.table(result)
-    if (result.status !== 200){
-      setUsernameError(result.data.errors.email[0])
-      // setPasswordError(result.data.errors.password[0])
+    const result = await login(credentials)
+    console.log(result)
+    if (result.status === 200){
+      setAuthUser(result.user) // user data
+      setUsernameError('')
+      setPasswordError('')
       setLoading(false)
-      return;
+      redirect("/dashboard")
+    }else {
+      setPasswordError(result.message)
+      setLoading(false)
     }
-    setAuthUser(result.user) // user data
-    setUsernameError('')
-    setPasswordError('')
-    setLoading(false)
-    redirect("/dashboard")
+
   }
 
   return (
     <WithoutAuthLayout>
       <div className="flex items-center justify-center min-h-screen bg-background ">
         {/*<Spinner   label="Loading..." color="warning" />*/}
-        <div className="w-full max-w-md p-8 space-y-6 rounded shadow-2xl border-3 border-slate-700">
+        <div className="w-full max-w-sm max-w-md p-8 space-y-6 rounded shadow-2xl border-3 border-slate-700">
           {/*{usernameError &&*/}
           {/*  <Alert*/}
           {/*    color={"danger"}*/}

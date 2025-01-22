@@ -42,7 +42,7 @@ export const Sidebar = memo(() => {
       </div>
 
       {/* Mobile Hamburger Menu */}
-      <div className="lg:hidden flex items-center justify-center h-20 z-10 absolute">
+      <div className="lg:hidden flex items-center justify-center h-20 z-10 absolute hidden">
         <button
           className={`p-4 focus:outline-none ml-2 ${isMenuOpen ? 'hidden' : ''}`}
           onClick={() => setIsMenuOpen(!isMenuOpen)}

@@ -4,13 +4,13 @@ import {Card, Table} from "@nextui-org/react";
 import {Image} from "@nextui-org/image";
 import ThemeDataTable from "@/app/components/Table/ThemeDataTable";
 
-const Member = () => {
+const Inventory = () => {
   const [isFollowed, setIsFollowed] = useState(false);
-  console.log('Members')
+  console.log('Inventory')
   return (
     <>
       <div className="flex items-center justify-between h-10 mb-5">
-        <div className="text-2xl font-bold">Members</div>
+        <div className="text-2xl font-bold">Inventory</div>
         <a href="" className="flex justify-between items-center w-52">
           <Image
             className="w-5 h-5"
@@ -31,4 +31,4 @@ const Member = () => {
   )
 }
 
-export default Member;
+export default Inventory;

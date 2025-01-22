@@ -4,9 +4,9 @@ import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem} from "@nextui-org
 import {logout} from "@/app/auth/login/actions";
 
 const Header = React.memo(({authUser}) => {
-  console.clear()
-  console.table(authUser)
-  // console.log('Header is rendered')
+  // console.clear()
+  // console.table(authUser)
+  console.log('Header is rendered ' + Math.floor(Math.random() * (99999 - 9999 + 1)) + 9999)
   return (
     <>
       <header className="bg-background">

@@ -7,6 +7,13 @@ const nextConfig = {
       allowedOrigins: ['http://127.0.0.1:8000/api'],
     },
   },
+  compiler: {
+    // Enable shallow optimization
+    React: {
+      // Enable React memoization
+      memoize: true,
+    },
+  },
 };
 
 export default nextConfig;

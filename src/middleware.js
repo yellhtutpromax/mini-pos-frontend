@@ -1,26 +1,54 @@
-import { NextResponse } from 'next/server'
-import {decrypt, deleteSession, refreshAccessToken} from '@/app/lib/session'
-import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server';
+import { decrypt, refreshAccessToken, deleteSession } from '@/app/lib/session';
+import { cookies } from 'next/headers';
 
-// 1. Specify protected and public routes
-const protectedRoutes = ['/dashboard','/members']
-const publicRoutes = ['/auth/login', '/signup', '/unauthorized', '/system-health-check']
+// Protected and public routes
+const protectedRoutes = ['/dashboard', '/inventory', '/sell'];
+const publicRoutes = ['/auth/login', '/signup', '/'];
 
-export default async function middleware(request) {
-  // 2. Check if the current route is protected or public
-  // const path = request.nextUrl.pathname
-  // const isProtectedRoute = protectedRoutes.includes(path)
-  // const isPublicRoute = publicRoutes.includes(path)
+export default async function middleware(req) {
+  const path = req.nextUrl.pathname;
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('access_token')?.value;
+  const refreshToken = cookieStore.get('refresh_token')?.value;
 
+  const isProtectedRoute = protectedRoutes.includes(path);
+  const isPublicRoute = publicRoutes.includes(path);
 
-  return NextResponse.next()
+  let session = null;
+
+  // Attempt to decrypt the access token
+  if (accessToken) {
+    session = await decrypt(accessToken);
+  }
+
+  // If access token is expired or invalid, try to refresh it
+  // if (!session && refreshToken) {
+  //   const newAccessToken = await refreshAccessToken(refreshToken);
+  //
+  //   if (newAccessToken) {
+  //     session = await decrypt(newAccessToken); // Refresh successful, get the new session
+  //   } else {
+  //     // If refresh fails, clear cookies and redirect to login
+  //     await deleteSession();
+  //     return NextResponse.redirect(new URL('/auth/login', req.nextUrl));
+  //   }
+  // }
+
+  // Handle protected routes
+  if (isProtectedRoute && !session) {
+    return NextResponse.redirect(new URL('/auth/login', req.nextUrl));
+  }
+
+  // Handle public routes
+  if (isPublicRoute && session?.id && !req.nextUrl.pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
+  }
+
+  return NextResponse.next();
 }
 
 // Routes Middleware should not run on
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|.*\\.png$).*)',
-    '/dashboard/:path*',
-    '/inventory/:path*'
-  ],
-}
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+};

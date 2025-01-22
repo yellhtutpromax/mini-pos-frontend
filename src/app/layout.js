@@ -1,14 +1,13 @@
-"use client"
+"use client";
 
-import { metadata } from "./metadata"; // server-side only
+import {useMemo, createContext, useContext, memo} from "react";
 import localFont from "next/font/local";
 import "./styles/globals.css";
-import {Providers} from "./providers";
+import { Providers } from "./providers";
 import { usePathname } from "next/navigation";
-import {Suspense} from "react";
 import AuthenticatedLayout from "./auth-layout";
 import WithoutAuthLayout from "./without-auth-layout";
-import {AuthProvider} from "@/app/lib/authContext";
+import { AuthProvider } from "@/app/lib/authContext";
 
 const montserratMedium = localFont({
   src: "./fonts/Montserrat-Medium.ttf",
@@ -21,25 +20,56 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-export default function RootLayout({ children }) {
-  const pathname = usePathname()
-  const withoutAuthPaths = ['/', '/auth/login', '/system-health-check'] // exclude path
-  const isWithoutAuth = withoutAuthPaths.includes(pathname)
-  const Layout = isWithoutAuth ? WithoutAuthLayout : AuthenticatedLayout
+// Context to store layout logic
+const LayoutContext = createContext();
+
+export function LayoutProvider({ children }) {
+  const pathname = usePathname();
+
+  // Memoize the layout type based on the pathname
+  const isWithoutAuth = useMemo(() => {
+    return ["/", "/auth/login", "/system-health-check"].includes(pathname);
+  }, [pathname]);
+
+  const contextValue = useMemo(() => ({ isWithoutAuth }), [isWithoutAuth]);
 
   return (
-    <html lang="en" className='dark'>
-      <body className={`${montserratMedium.variable} ${geistMono.variable} antialiased bg-foreground min-h-screen`}>
-        <Providers>
-          <AuthProvider>
-            <Layout metadata={metadata} >
-              <Suspense fallback={<div>Layout stack ...</div>}>
-                {children}
-              </Suspense>
-            </Layout>
-          </AuthProvider>
-        </Providers>
-      </body>
+    <LayoutContext.Provider value={contextValue}>
+      {children}
+    </LayoutContext.Provider>
+  );
+}
+
+export function useLayout() {
+  return useContext(LayoutContext);
+}
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" className="dark">
+    <body
+      className={`${montserratMedium.variable} ${geistMono.variable} antialiased bg-foreground min-h-screen`}
+    >
+    <Providers>
+      <AuthProvider>
+        <LayoutProvider>
+          <LayoutRenderer>{children}</LayoutRenderer>
+        </LayoutProvider>
+      </AuthProvider>
+    </Providers>
+    </body>
     </html>
-  )
+  );
+}
+
+const MemoizedAuthenticatedLayout = memo(AuthenticatedLayout);
+const MemoizedWithoutAuthLayout = memo(WithoutAuthLayout);
+
+function LayoutRenderer({ children }) {
+  const { isWithoutAuth } = useLayout();
+  const Layout = isWithoutAuth
+    ? MemoizedWithoutAuthLayout
+    : MemoizedAuthenticatedLayout;
+
+  return <Layout>{children}</Layout>;
 }

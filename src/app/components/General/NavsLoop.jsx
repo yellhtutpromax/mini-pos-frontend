@@ -1,14 +1,16 @@
-import {navDb} from "@/app/constants/constants";
-import {Image} from "@nextui-org/image";
-import {usePathname} from "next/navigation";
-import {Divider} from "@nextui-org/react";
+import { navDb } from "@/app/constants/constants";
+import { Image } from "@nextui-org/image";
+import { usePathname } from "next/navigation";
+import { Divider } from "@nextui-org/react";
+import Link from "next/link";  // Import Link component from Next.js
 
 export const NavsLoop = () => {
   const pathname = usePathname();
   return (
     <>
-      <a
+      <Link
         key={'sidebar'}
+        href="#"
         className={`flex items-center justify-between w-56 mx-auto h-12 px-4 rounded-lg mb-2 cursor-pointer transition`}
       >
         <div className="flex items-center gap-3">
@@ -20,16 +22,15 @@ export const NavsLoop = () => {
             />
           </div>
           <span className={`text-gray-500 text-sm`}>
-                    Close Sidebar
-              </span>
+            Close Sidebar
+          </span>
         </div>
-      </a>
-      <Divider className="w-11/12 m-auto mb-3"/>
+      </Link>
+      <Divider className="w-11/12 m-auto mb-3" />
       {navDb.map((navItem) => {
         const isActive = pathname === `/${navItem.route}`;
         return (
-          // <>
-          <a
+          <Link
             key={navItem.id}
             href={`/${navItem.route}`}
             className={`flex items-center justify-between w-56 mx-auto h-12 px-4 rounded-lg mb-4 cursor-pointer transition ${
@@ -45,13 +46,12 @@ export const NavsLoop = () => {
                 />
               </div>
               <span className={`${isActive ? "text-white" : "text-gray-500"} text-sm font-semibold`}>
-                    {navItem.name}
-                  </span>
+                {navItem.name}
+              </span>
             </div>
-          </a>
-          // </>
+          </Link>
         );
       })}
     </>
-  )
+  );
 }

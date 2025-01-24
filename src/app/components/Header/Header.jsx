@@ -17,24 +17,28 @@ const Header = React.memo(({authUser}) => {
     <>
       <header className="bg-background">
         <div className="sm:w-themeContainer bg-background w-full mx-auto h-20 shadow fixed bottom-0 z-50 sm:z-auto sm:relative sm:bottom-auto">
-          <div className="w-11/12 md:w-full border border-white mx-auto bg-background h-20 flex justify-between items-center">
+          <div className="w-themeContainer md:w-full mx-auto bg-background h-20 flex justify-between items-center">
             {navDb.map((navItem) => {
               const isActive = pathname === `/${navItem.route}`;
+              const activeIconPath = isActive ? 'active/' : '/';
               return (
-                <div className=" border border-bg-yellow-600">
+                <div key={navItem.id} className="flex items-center h-full mt-4">
                   <Link
-                      key={navItem.id}
-                      href={`/${navItem.route}`}
-                      className={`flex items-center justify-center mt-7 w-20 mx-auto h-12 px-4 rounded-lg mb-4 cursor-pointer transition ${
-                          isActive ? "bg-navActive" : "hover:bg-navActive"
-                      }`}
+                    key={navItem.id}
+                    href={`/${navItem.route}`}
+                    className={`flex items-center justify-center  w-20 mx-auto h-12 py-4 rounded-lg mb-4 cursor-pointer transition ${
+                      isActive ? "" : ""
+                    }`}
                   >
-                    <div className="bg-themeBg">
+                    <div className="bg-themeBg flex flex-col items-center justify-between">
                       <Image
-                          className="text-white w-12 h-12"
-                          alt={navItem.name}
-                          src={`/icons/nav-icons/${navItem.iconPath}`}
+                        className="text-white w-10 h-10"
+                        alt={navItem.name}
+                        src={`/icons/nav-icons/${activeIconPath}${navItem.iconPath}`}
                       />
+                      <div className={`text-xs ${isActive ? "text-themeSecondary" : "text-gray-400"}`}>
+                        {navItem.name}
+                      </div>
                     </div>
                   </Link>
                 </div>

@@ -39,9 +39,10 @@ const usersDb = [
 const navDb = [
   {
     id: 1,
-    name: "Dashboard",
-    route: "dashboard",
-    iconPath: "dashboard.svg",
+    name: "Sell",
+    route: "sell",
+    iconPath: "sell.svg",
+    iconActivePath: "sell_white.svg",
     children: [],
   },
   {
@@ -49,15 +50,18 @@ const navDb = [
     name: "Inventory",
     route: "inventory",
     iconPath: "inventory.svg",
+    iconActivePath: "inventory_white.svg",
     children: [],
   },
   {
     id: 3,
-    name: "Sell",
-    route: "sell",
-    iconPath: "sell.svg",
+    name: "Dashboard",
+    route: "dashboard",
+    iconPath: "dashboard.svg",
+    iconActivePath: "dashboard_white.svg",
     children: [],
   },
+
 ];
 
 module.exports = {

@@ -4,8 +4,8 @@ const Sell = () => {
   console.log('sell')
   return (
     <>
-      <div className="flex items-center justify-center max-h-screen ">
-        <div className="text-2xl">Total sell</div>
+      <div className="flex items-center justify-between h-10 mb-5">
+        <div className="text-2xl font-bold">Sell</div>
       </div>
     </>
   )

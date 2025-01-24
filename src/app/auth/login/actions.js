@@ -27,6 +27,7 @@ export async function login(credentials) {
     const {email, password} = credentials;
     const [rows] = await mysqlDb.query("SELECT * FROM users WHERE email = ?", [email]);
     const user = rows[0]; // user data
+    console.log('_______________')
     console.log(user);
     if (!user) {
       return errorResponse({

@@ -6,7 +6,7 @@ import {redirect} from "next/navigation"; // don't add try catch block when you 
 import {login} from "@/app/auth/login/actions"
 import WithoutAuthLayout from "@/app/without-auth-layout"
 import {useAuth} from "@/app/lib/authContext";
-import {Alert} from "@nextui-org/alert";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
 
@@ -18,6 +18,7 @@ const Login = () => {
   const [usernameError, setUsernameError] = useState("") // State to hold error messages
   const [passwordError, setPasswordError] = useState("") // State to hold error messages
   const [loading, setLoading] = useState(false) // State to hold loading state
+  const router = useRouter();  // Initialize useRouter from next/navigation
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -44,7 +45,7 @@ const Login = () => {
       setUsernameError('')
       setPasswordError('')
       setLoading(false)
-      redirect("/dashboard")
+      router.push("/dashboard");  // Client-side redirection after successful login
     }else {
       setPasswordError(result.message)
       setLoading(false)

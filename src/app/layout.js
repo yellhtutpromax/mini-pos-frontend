@@ -48,7 +48,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark">
     <body
-      className={`${montserratMedium.variable} ${geistMono.variable} antialiased bg-foreground min-h-screen`}
+      className={`${montserratMedium.variable} ${geistMono.variable} antialiased bg-foreground min-h-[100dvh]`}
     >
     <Providers>
       <AuthProvider>

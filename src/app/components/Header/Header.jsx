@@ -16,23 +16,23 @@ const Header = React.memo(({authUser}) => {
   return (
     <>
       <header className="bg-background">
-        <div className="sm:w-themeContainer bg-background w-full mx-auto h-20 shadow fixed bottom-0 z-50 sm:z-auto sm:relative sm:bottom-auto">
-          <div className="w-themeContainer md:w-full mx-auto bg-background h-20 flex justify-between items-center">
+        <div className="sm:w-themeContainer bg-background w-full mx-auto min-h-5 shadow fixed bottom-0 z-50 sm:z-auto sm:relative sm:bottom-auto">
+          <div className="w-themeContainer md:w-full mx-auto bg-background min-h-5 flex justify-between items-center">
             {navDb.map((navItem) => {
               const isActive = pathname === `/${navItem.route}`;
               const activeIconPath = isActive ? 'active/' : '/';
               return (
-                <div key={navItem.id} className="flex items-center h-full mt-4">
+                <div key={navItem.id} className="flex items-center h-full mt-3">
                   <Link
                     key={navItem.id}
                     href={`/${navItem.route}`}
-                    className={`flex items-center justify-center  w-20 mx-auto h-12 py-4 rounded-lg mb-4 cursor-pointer transition ${
+                    className={`flex items-center justify-center  w-20 mx-auto h-11 py-4 rounded-lg mb-4 cursor-pointer transition ${
                       isActive ? "" : ""
                     }`}
                   >
                     <div className="bg-themeBg flex flex-col items-center justify-between">
                       <Image
-                        className="text-white w-10 h-10"
+                        className="text-white w-7 h-7"
                         alt={navItem.name}
                         src={`/icons/nav-icons/${activeIconPath}${navItem.iconPath}`}
                       />

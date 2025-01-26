@@ -32,8 +32,8 @@ export const Sidebar = memo(() => {
     <>
       {/* Desktop Sidebar */}
       <div className="hidden lg:block w-64 h-screen bg-background overflow-hidden">
-        <div className="flex items-center justify-center h-20">
-          <div className="text-4xl font-bold">MESOFT</div>
+        <div className="flex items-center h-16">
+          <div className="text-xl ml-10 font-bold">MESOFT</div>
         </div>
         <Divider className="w-11/12 m-auto" />
         <div className="nav-container mt-4">
@@ -42,7 +42,7 @@ export const Sidebar = memo(() => {
       </div>
 
       {/* Mobile Hamburger Menu */}
-      <div className="lg:hidden flex items-center justify-center h-20 z-10 absolute hidden">
+      <div className="lg:hidden flex items-center justify-center h-16 z-10 absolute hidden">
         <button
           className={`p-4 focus:outline-none ml-2 ${isMenuOpen ? 'hidden' : ''}`}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -61,7 +61,7 @@ export const Sidebar = memo(() => {
           }`}
         >
           <div className="flex items-center justify-center h-20">
-            <div className="text-4xl font-bold">MESOFT</div>
+            <div className="text-xl font-bold">MESOFT</div>
           </div>
           <Divider className="w-11/12 m-auto" />
           <div className="w-64 h-screen bg-background overflow-hidden z-10 absolute">

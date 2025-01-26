@@ -19,14 +19,14 @@ export const ThemeInput = ({
   return (
     <>
       <div>
-        <label htmlFor={`${id}`} className="text-white">{label}</label>
+        <label htmlFor={`${id}`} className="text-white text-xs ml-1">{label}</label>
       </div>
       <Input
         radius={'sm'}
         type={type}
-        className={`${customClassName}`}  // You can still add a default class
+        className={`${customClassName} text-base `}  // You can still add a default class
         classNames={{
-          inputWrapper: "h-12 mt-1 text-sm bg-background dark:bg-foreground text-white text-2xl border border-themeBorder",
+          inputWrapper: "h-9 mt-1 bg-background dark:bg-foreground text-white text-sm border border-themeBorder",
           label: "text-white !important"
         }}
         id={id}
@@ -41,6 +41,7 @@ export const ThemeInput = ({
         errorMessage={errorMessage}
         placeholder={placeholder}
         variant="bordered"
+        style={{ fontSize: "16px" }} // Add inline font-size fallback
       />
     </>
   )

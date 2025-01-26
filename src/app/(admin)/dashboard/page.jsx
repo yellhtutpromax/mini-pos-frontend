@@ -32,7 +32,7 @@ const Dashboard =  () => {
   return (
     <>
       <div className="flex items-center justify-between h-10 mb-5">
-        <div className="text-2xl font-bold">Dashboard</div>
+        <div className="text-xl font-bold">Dashboard</div>
       </div>
       <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {cards.map((card) => (

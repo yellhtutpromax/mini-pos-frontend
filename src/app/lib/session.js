@@ -124,7 +124,7 @@ export async function refreshAccessToken(refreshToken) {
 
     // Fetch user data from the database
     const userId = payload.id;
-    console.log(payload)
+    // console.log(payload)
     const [rows] = await mysqlDb.query("SELECT * FROM users WHERE id = ?", [userId]);
     const user = rows[0];
     console.log(user)

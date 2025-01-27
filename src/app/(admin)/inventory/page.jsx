@@ -67,11 +67,6 @@ const Inventory = () => {
     }
   };
 
-  useEffect(() => {
-    fetchStock(); // Fetch stock data when the component mounts
-
-  }, []);
-
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -103,6 +98,14 @@ const Inventory = () => {
     stock.buy_amount.toString().includes(searchQuery) ||
     stock.sell_amount.toString().includes(searchQuery)
   );
+
+  useEffect(() => {
+    fetchStock(); // Fetch stock data when the component mounts
+  }, []);
+
+  useEffect(() => {
+    setTotalStock(filteredStocks.length)
+  }, [filteredStocks]);
 
 
   const handleSearch = (e) => {
@@ -150,11 +153,11 @@ const Inventory = () => {
         </div>
       </div>
 
-      <Modal className="bg-background" isOpen={isOpen} scrollBehavior={"inside"} onOpenChange={onOpenChange}>
-        <ModalContent>
+      <Modal className="bg-background rounded" isOpen={isOpen} scrollBehavior={"inside"} onOpenChange={onOpenChange}>
+        <ModalContent className="bg-background rounded">
           {(onClose) => (
             <>
-              <div className="">
+              <div className="bg-background">
                 <div className="ml-3 pt-5 text-white text-sm">Stock Entry</div>
                 <ModalBody className="p-2">
                   <form onSubmit={handleSubmit}>

@@ -1,9 +1,11 @@
 'use client';
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { Alert } from "@heroui/alert";
-import { Button, Card, CardBody, CardFooter, CardHeader } from "@nextui-org/react";
+import {Button, Card, CardBody, CardFooter, CardHeader, Spinner} from "@nextui-org/react";
+import { Modal,  ModalContent,  ModalHeader,  ModalBody,  ModalFooter, ModalProps, useDisclosure} from "@heroui/modal";
 import { ThemeInput } from "@/app/components/Form/Input/ThemeInput";
-import { saveFormData } from "@/app/(admin)/inventory/action"
+import {fetchStocksData, saveFormData} from "@/app/(admin)/inventory/action"
+import StockBlock from "@/app/components/StockBlock";
 
 const Inventory = () => {
   // State for form inputs
@@ -15,7 +17,13 @@ const Inventory = () => {
   });
 
   // State for validation errors
+  const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({});
+
+  // State for fetched stock data
+  const [totalStock, setTotalStock] = useState(0);
+  const [stocks, setStocks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Handle input change
   const handleChange = (e) => {
@@ -45,126 +53,189 @@ const Inventory = () => {
     return Object.keys(validationErrors).length === 0;
   };
 
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
+  // Fetch stock data on component mount
+  const fetchStock = async () => {
+    try {
+      const data = await fetchStocksData();
+      console.table(data.data);
+      setTotalStock(data.data.length)
+      setStocks(data.data); // Set the fetched stock data in state
+    } catch (error) {
+      console.error("Error fetching stock data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStock(); // Fetch stock data when the component mounts
+
+  }, []);
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      console.log("Form submitted successfully:", formData);
-      try {
-        const response = await saveFormData(formData); // Call the save function
-        if (response.success) {
-          // Optionally, reset the form or show a success message
-          setFormData({ name: "", buyAmount: "", sellAmount: "", quantity: "" });
-        } else {
-          console.log("Error saving data:", response.message);
-        }
-      } catch (error) {
-        console.log("Unexpected error occurred:", error);
+    if (!validate()) return;
+    console.log("Form submitted successfully:", formData);
+    try {
+      setLoading(true)
+      const response = await saveFormData(formData); // Call the save function
+      if (response.success) {
+        await fetchStock();
+        // Optionally, reset the form or show a success message
+        setFormData({ name: "", buyAmount: "", sellAmount: "", quantity: "" });
+        // Close the modal
+        onOpenChange(false);
+      } else {
+        console.log("Error saving data:", response.message);
       }
-    } else {
-      console.log("Form validation errors:", errors);
+      setLoading(false)
+    } catch (error) {
+      console.log("Unexpected error occurred:", error);
+      setLoading(false)
     }
   };
+
+  // Filter stocks based on search query
+  const filteredStocks = stocks.filter(stock =>
+    stock.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (stock.barcode && stock.barcode.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    stock.buy_amount.toString().includes(searchQuery) ||
+    stock.sell_amount.toString().includes(searchQuery)
+  );
+
+
+  const handleSearch = (e) => {
+    const { value } = e.target;
+    setSearchQuery(value);
+    console.log(filteredStocks)
+    // setFormData((prev) => ({
+    //  ...prev,
+    //   name: value,
+    // }));
+  }
 
   return (
     <>
       <div className="flex items-center justify-between h-10 mb-3">
-        <div className="text-xl font-bold">Inventory</div>
+        <div className="text-xl font-bold flex items-center">
+          <span>Inventory</span>
+          <div className={`ml-2 ${totalStock === 0 ? 'invisible' : 'visible'}`}>( {totalStock} Items )</div>
+        </div>
+        <Button className="bg-transparent border border-themeBorder" onPress={onOpen}>
+          <div className="text-left text-themeSecondary text-base font-semibold">Entry</div>
+        </Button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3">
-        <form onSubmit={handleSubmit}>
-          <Card className="w-full bg-background border border-themeBorder">
-            <CardHeader className="p-3">
-              <div className="text-white text-sm">Stock Entry</div>
-            </CardHeader>
-            <div className="border border-themeBorder"></div>
-            <CardBody className="p-2">
-              {/*{Object.keys(errors).length > 0 && (*/}
-              {/*  <Alert*/}
-              {/*    className="mb-4"*/}
-              {/*    color="warning"*/}
-              {/*    title="Validation Errors"*/}
-              {/*    isClosable={true}*/}
-              {/*  >*/}
-              {/*    <ul>*/}
-              {/*      {Object.values(errors).map((error, index) => (*/}
-              {/*        <li key={index} className="text-sm text-red-500">{error}</li>*/}
-              {/*      ))}*/}
-              {/*    </ul>*/}
-              {/*  </Alert>*/}
-              {/*)}*/}
-              <div className="input-group mb-1">
-                <ThemeInput
-                  label="Name"
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required={false}
-                />
-                {errors.name && <div className="text-red-500 text-sm mt-1">{errors.name}</div>}
-              </div>
-              <div className="input-group mb-1">
-                <ThemeInput
-                  label="Buy Amount"
-                  type="number"
-                  name="buyAmount"
-                  value={formData.buyAmount}
-                  onChange={handleChange}
-                  required={true}
-                />
-                {errors.buyAmount && <div className="text-red-500 text-sm mt-1">{errors.buyAmount}</div>}
-              </div>
-              <div className="input-group mb-1">
-                <ThemeInput
-                  label="Sell Amount"
-                  type="number"
-                  name="sellAmount"
-                  value={formData.sellAmount}
-                  onChange={handleChange}
-                  required={true}
-                />
-                {errors.sellAmount && <div className="text-red-500 text-sm mt-1">{errors.sellAmount}</div>}
-              </div>
-              <div className="input-group mb-1">
-                <ThemeInput
-                  label="Quantity"
-                  type="number"
-                  name="quantity"
-                  value={formData.quantity}
-                  onChange={handleChange}
-                  required={true}
-                />
-                {errors.quantity && <div className="text-red-500 text-sm mt-1">{errors.quantity}</div>}
-              </div>
-            </CardBody>
-            <div className="border border-themeBorder"></div>
-            <CardFooter className="p-2 flex justify-end items-center">
-              <Button
-                size={'sm'}
-                type="button"
-                radius="full"
-                onClick={() => {
-                  setFormData({ name: "", buyAmount: "", sellAmount: "", quantity: "" });
-                  setErrors({});
-                }}
-                className="bg-[#242745]"
-              >
-                Clear
-              </Button>
-              <Button
-                size={'sm'}
-                type="submit"
-                className="bg-themeSecondary ml-5"
-                radius="full">
-                Save
-              </Button>
-            </CardFooter>
-          </Card>
-        </form>
+      <div className="input-group mb-5">
+        <ThemeInput
+          label={false}
+          value={formData.name}
+          type="text"
+          name="search"
+          placeholder="Type to search ..."
+          className="border-none focus:border-themeBorder"
+          autoComplete="off"
+          autoFocus={true}
+          value={searchQuery}
+          onChange={handleSearch}
+          required={false}
+        />
+        {errors.name && <div className="text-red-500 text-sm mt-1">{errors.name}</div>}
       </div>
-    </>
-  );
-};
+      <div className="mt-4 " style={{overflowY: 'scroll',maxHeight: '700px', scrollbarWidth: 'none' }} >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {filteredStocks.map((stock) => (
+            <StockBlock key={stock.id} stock={stock} />
+          ))}
+        </div>
+      </div>
 
-export default Inventory;
+      <Modal className="bg-background" isOpen={isOpen} scrollBehavior={"inside"} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <div className="">
+                <div className="ml-3 pt-5 text-white text-sm">Stock Entry</div>
+                <ModalBody className="p-2">
+                  <form onSubmit={handleSubmit}>
+                    {/*<div className="border border-themeBorder"></div>*/}
+                    <div className="input-group mb-1">
+                      <ThemeInput
+                        label="Name"
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required={false}
+                      />
+                      {errors.name && <div className="text-red-500 text-sm mt-1">{errors.name}</div>}
+                    </div>
+                    <div className="input-group mb-1">
+                      <ThemeInput
+                        label="Buy Amount"
+                        type="number"
+                        name="buyAmount"
+                        value={formData.buyAmount}
+                        onChange={handleChange}
+                        required={true}
+                      />
+                      {errors.buyAmount && <div className="text-red-500 text-sm mt-1">{errors.buyAmount}</div>}
+                    </div>
+                    <div className="input-group mb-1">
+                      <ThemeInput
+                        label="Sell Amount"
+                        type="number"
+                        name="sellAmount"
+                        value={formData.sellAmount}
+                          onChange={handleChange}
+                          required={true}
+                        />
+                        {errors.sellAmount && <div className="text-red-500 text-sm mt-1">{errors.sellAmount}</div>}
+                      </div>
+                      <div className="input-group mb-1">
+                        <ThemeInput
+                          label="Quantity"
+                          type="number"
+                          name="quantity"
+                          value={formData.quantity}
+                          onChange={handleChange}
+                          required={true}
+                        />
+                        {errors.quantity && <div className="text-red-500 text-sm mt-1">{errors.quantity}</div>}
+                      </div>
+                      {/*<div className="border border-themeBorder"></div>*/}
+                      <div className="p-2 mt-3 flex justify-end items-center">
+                        <Button
+                          size={'sm'}
+                          type="button"
+                          radius="full"
+                          onClick={() => {
+                            setFormData({name: "", buyAmount: "", sellAmount: "", quantity: ""});
+                            setErrors({});
+                          }}
+                          className="bg-[#242745]"
+                        >
+                          Clear
+                        </Button>
+                        <Button
+                          disabled={loading}
+                          size={'sm'}
+                          type="submit"
+                          className="bg-themeSecondary ml-5"
+                          radius="full">
+                          {loading ? <Spinner size={'sm'} color={'white'}/> : "Save"}
+                        </Button>
+                      </div>
+                    </form>
+                  </ModalBody>
+                </div>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+
+      </>
+      );
+      };
+
+      export default Inventory;

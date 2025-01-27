@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 192.168.1.174 -p 4000",
+    "dev": "next dev -H 196.1.1.154 -p 4000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -11,6 +11,7 @@
   "dependencies": {
     "@heroui/alert": "^2.2.10",
     "@heroui/autocomplete": "^2.3.11",
+    "@heroui/modal": "^2.2.8",
     "@nextui-org/alert": "^2.2.8",
     "@nextui-org/button": "^2.2.8",
     "@nextui-org/card": "^2.2.8",

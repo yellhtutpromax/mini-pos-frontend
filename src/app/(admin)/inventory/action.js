@@ -116,7 +116,7 @@ const fetchStocksData = async () => {
 }
 
 // Save sale data to the database
-export const saveSale = async (saleData) => {
+const saveSale = async (saleData) => {
   try {
     // Prepare the SQL query for inserting into the `sales` table
     const salesSql = `

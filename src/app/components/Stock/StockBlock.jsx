@@ -1,14 +1,32 @@
-const StockBlock = ({stock}) => {
+'use client'
+
+import {Button} from "@nextui-org/react";
+
+const StockBlock = ({stock, onEdit, onSell}) => {
   return(
     <>
-      <div key={stock.id} className="bg-background border border-themeBorder w-full min-h-32 rounded p-2">
-        <h3 className="font-bold text-base">{stock.name}</h3>
-        <div className="my-3">
-          {stock.barcode ? (
-            <p className="text-sm text-gray-400">Barcode: {stock.barcode}</p>
-          ) : (
-            <p className="text-sm text-gray-400">No barcode available</p>
-          )}
+      <div onClick={() => onEdit(stock)} key={stock.id}
+           className="bg-background border border-themeBorder w-full min-h-32 rounded p-2 "
+      >
+        <div className="flex items-start justify-between mt-3">
+          <div>
+            <div className="font-bold text-base">{stock.name}</div>
+            <div className="my-3">
+              {stock.barcode ? (
+                <p className="text-sm text-gray-400">Barcode: {stock.barcode}</p>
+              ) : (
+                <p className="text-sm text-gray-400">No barcode available</p>
+              )}
+            </div>
+          </div>
+          <div>
+            <Button
+              className="bg-transparent border border-danger-300"
+              onPress={() => onSell(stock)}
+            >
+              <div className="text-left text-danger text-base font-semibold">Sell</div>
+            </Button>
+          </div>
         </div>
         <div className="border border-themeBorder my-2"></div>
         <div className="my-4">

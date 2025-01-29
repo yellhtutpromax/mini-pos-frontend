@@ -78,7 +78,7 @@ const editFormData = async (formData) => {
     };
   } catch (error) {
     // Handle and log errors
-    console.error('Error updating data:', error);
+    console.log('Error updating data:', error);
     return {
       success: false,
       message: error.message || 'Error updating data.',
@@ -118,20 +118,25 @@ const fetchStocksData = async () => {
 // Save sale data to the database
 const saveSale = async (saleData) => {
   try {
+
+    const voucherCode = await generateBarcode()
+    const notes = saleData.notes !== undefined ? saleData.notes : null;
     // Prepare the SQL query for inserting into the `sales` table
     const salesSql = `
-      INSERT INTO sales (stock_id, user_id, unit_price, total_amount, quantity, sell_date, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())
+      INSERT INTO sales (voucher_codes, stock_id, user_id, unit_price, total_amount, quantity, sell_date, notes, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
     `;
 
     // Execute the query to save the sale
     const [salesResult] = await mysqlDb.execute(salesSql, [
+      voucherCode, // Generate a unique voucher code
       saleData.stock_id,
       saleData.user_id,
       saleData.unit_price,
       saleData.total_amount,
       saleData.quantity,
       saleData.sell_date,
+      notes, // Use the default value if notes is undefined
     ]);
 
     // Update the stock quantity in the `stocks` table

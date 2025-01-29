@@ -10,6 +10,7 @@ export const ThemeInput = ({
                              onChange,
                              onBlur,
                              onFocus,
+                             isClearable = false,
                              disabled = false,     // Default to false if not provided
                              isRequired = false,   // Allow custom control over 'isRequired'
                              isInvalid = false,    // Allow custom control over 'isInvalid'
@@ -35,6 +36,8 @@ export const ThemeInput = ({
         onChange={onChange}
         onBlur={onBlur}
         onFocus={onFocus}
+        isClearable={isClearable}
+        onClear={isClearable ? () => onChange({ target: { name, value: "" } }) : ''}  // Update value when cleared
         disabled={disabled}
         isRequired={isRequired}
         isInvalid={isInvalid}

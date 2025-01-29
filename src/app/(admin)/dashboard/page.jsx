@@ -19,9 +19,10 @@ const Dashboard = () => {
 
   const cards = [
     { id: 1, title: "Stocks Items", unit: 'Pcs', amount: 1530, },
-    { id: 2, title: "In Stocks Items", unit: 'Pcs', amount: 25000,},
+    { id: 2, title: "Today's Order", unit: 'Pcs', amount: 25000,},
     { id: 3, title: "Capital", unit: 'MMK', amount: '30,000,000,000', layout: 'col-span-2'},
     { id: 4, title: "Profit", unit: 'MMK', amount: '15,000,000', layout: 'col-span-2'},
+    { id: 5, title: "Today's Order", unit: 'MMK', amount: '85,000,000', layout: 'col-span-2'},
   ]
 
   return (

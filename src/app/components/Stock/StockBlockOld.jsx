@@ -2,61 +2,56 @@
 
 import {Button, Card, Skeleton} from "@nextui-org/react";
 
-const SellBlock = ({sale, loading, onSell, fetchLoading}) => {
-  let stock = sale.stock
+const StockBlock = ({stock, onEdit, onSell, fetchLoading}) => {
   return (
     <>
-      {!loading ? (
+      {!fetchLoading ? (
         <div
-          // onClick={() => onEdit(sale)}
-          key={sale.id}
+          onClick={() => onEdit(stock)} key={stock.id}
           className="bg-background border border-themeBorder w-full min-h-32 rounded p-2">
           <div className="flex items-start justify-between mt-3">
             <div>
               <div className="font-bold text-base">{stock.name}</div>
               <div className="my-3">
-                {sale.voucher_codes ? (
-                  <p className="text-sm text-gray-400">Voucher ID: {sale.voucher_codes}</p>
+                {stock.barcode ? (
+                  <p className="text-sm text-gray-400">Barcode: {stock.barcode}</p>
                 ) : (
-                  <p className="text-sm text-gray-400">No Voucher available</p>
+                  <p className="text-sm text-gray-400">No barcode available</p>
                 )}
               </div>
             </div>
             <div>
               <Button
-                className="bg-transparent border border-warning-300"
-                // onPress={() => onSell(sale)}
+                className="bg-transparent border border-danger-300"
+                onPress={() => onSell(stock)}
               >
-                <div className="text-left text-warning-300 text-base font-semibold">Edit</div>
+                <div className="text-left text-danger text-base font-semibold">Sell</div>
               </Button>
             </div>
           </div>
           <div className="border border-themeBorder my-2"></div>
           <div className="my-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-lg text-white">Quantity:</div>
-              <div className="text-lg text-white">
-                <span
-                  className="text-sm text-gray-500">{`Original Amount ${Number(sale.unit_price).toLocaleString()} MMK * `}</span>
-                {`${Number(sale.quantity)} Pcs`}
-              </div>
-            </div>
             <div className="flex items-center justify-between">
-              <div className="text-lg text-white">Total:</div>
-              <div className="text-lg text-white">{Number(sale.total_amount).toLocaleString()} MMK</div>
+              <div className="text-lg text-gray-400">Buy Amount:</div>
+              <div className="text-lg text-gray-400">{Number(stock.buy_amount).toLocaleString()} MMK</div>
             </div>
-            {sale.notes && (
-              <div className="flex flex-col items-start justify-between mt-5">
-                <div className="text-lg text-white mb-3">Notes:</div>
-                <div className="text-sm text-justify text-gray-400 flex-1 mb-4">{sale.notes}</div>
-              </div>
-            )}
+            <div className="flex items-center justify-between mt-1 mb-3">
+              <div className="text-lg">Sell Amount:</div>
+              <div className="text-lg">{Number(stock.sell_amount).toLocaleString()} MMK</div>
+            </div>
+            <p className="text-sm text-gray-400">
+              Quantity: {Number(stock.quantity)} pcs
+            </p>
           </div>
           <div className="border border-themeBorder my-2"></div>
-          <div className="flex justify-between items-start text-sm text-gray-400">
+          <div className="flex justify-between items-start text-sm text-gray-500">
             <div className="flex flex-col justify-start items-start mb-2">
-              <div>Date:</div>
-              <div>{new Date(sale.sell_date).toLocaleDateString()}</div>
+              <div>Created At:</div>
+              <div>{new Date(stock.created_at).toLocaleString()}</div>
+            </div>
+            <div className="flex flex-col justify-start items-start">
+              <div>Updated At:</div>
+              <div>{new Date(stock.updated_at).toLocaleString()}</div>
             </div>
           </div>
         </div>
@@ -130,4 +125,4 @@ const SellBlock = ({sale, loading, onSell, fetchLoading}) => {
   );
 };
 
-export default SellBlock;
+export default StockBlock;

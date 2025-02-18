@@ -1,19 +1,23 @@
 'use client'
 import {useEffect, useState} from "react"
-import {Button, Spinner} from "@nextui-org/react"
+import {Button, Divider, Spinner} from "@nextui-org/react"
 import {Modal, ModalContent, ModalBody, useDisclosure} from "@heroui/modal"
 import {ThemeInput} from "@/app/components/Form/Input/ThemeInput"
 import {fetchStocksData, saveFormData, editFormData} from "@/app/(admin)/inventory/action"
 import StockBlock from "@/app/components/Stock/StockBlock"
 import SellStock from "@/app/components/Stock/SellStock"
+import {useAuth} from "@/app/lib/authContext";
 
 const Inventory = () => {
+  const { authUser } = useAuth();
   // State for form inputs
   const [formData, setFormData] = useState({
+    user_id: authUser.id,
     name: "",
     buyAmount: "",
     sellAmount: "",
     quantity: "",
+    stockPicture: null,
   })
 
   // State for validation errors
@@ -30,6 +34,15 @@ const Inventory = () => {
   // Validate form
   const validate = () => {
     let validationErrors = {}
+    const { stockPicture } = formData
+    if(stockPicture && typeof stockPicture !== "string") {
+      // Check if the file is an image
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+      if (!allowedTypes.includes(stockPicture.type)) {
+        validationErrors.stockPicture = "Only image files are allowed."
+      }
+    }
+
     if (!formData.name) {
       validationErrors.name = "Name is required."
     }
@@ -71,6 +84,7 @@ const Inventory = () => {
     if (!validate()) return
     try {
       setLoading(true)
+      console.table(formData)
       const response = await (isEditing ? editFormData(formData) : saveFormData(formData))
        // Call the api function
       if (response.success) {
@@ -98,13 +112,17 @@ const Inventory = () => {
   )
 
   const formClear = () => {
-    setFormData({name: "", buyAmount: "", sellAmount: "", quantity: ""})
+    setFormData({user_id: authUser.id, name: "", buyAmount: "", sellAmount: "", quantity: "", stockPicture: null})
     setIsEditing(false)
     setErrors({})
   }
 
   useEffect(() => {
-    fetchStock() // Fetch stock data when the component mounts
+    const fetchData = async () => {
+      await fetchStock(); // Fetch stock data asynchronously
+    };
+
+    fetchData(); // Call the async function
   }, [])
 
   useEffect(() => {
@@ -119,13 +137,16 @@ const Inventory = () => {
 
   // Handle editing a stock item
   const handleEdit = (stock) => {
+    setErrors({}) // Clear the form data
     setIsEditing(true)
     setFormData({
       id: stock.id, // Set the ID of the stock being edited
+      user_id: authUser.id, // Set the user ID
       name: stock.name,
       buyAmount: stock.buy_amount,
       sellAmount: stock.sell_amount,
       quantity: stock.quantity,
+      stockPicture: stock.photo
     })
     onOpen() // Open the modal (if needed)
   }
@@ -138,7 +159,7 @@ const Inventory = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between h-10 mb-3">
+      <div className="flex items-center justify-between h-5 ">
         <div className="text-xl font-bold flex items-center">
           <span>Inventory</span>
           <div className={`ml-2 ${totalStock === 0 ? 'invisible' : 'visible'}`}>( {totalStock} Items )</div>
@@ -166,8 +187,8 @@ const Inventory = () => {
         />
       </div>
       <div className="load-card-ui">
-        <div className="mt-4 " style={{overflowY: 'scroll', maxHeight: '700px', scrollbarWidth: 'none'}}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mt-4" style={{overflowY: 'scroll', maxHeight: '700px', scrollbarWidth: 'none'}}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredStocks.map((stock) => (
               <StockBlock
                 key={stock.id}
@@ -184,9 +205,31 @@ const Inventory = () => {
             {(onClose) => (
               <>
                 <div className="bg-background">
-                  <div className="ml-3 pt-5 text-white text-sm">{isEditing ? 'Edit' : 'Stock Entry'}</div>
+                  <div className="ml-3  pt-5 text-white text-sm">{isEditing ? 'Edit' : 'Stock Entry'}</div>
+                  <Divider className="border-t border-themeBorder mt-4" />
                   <ModalBody className="p-2">
                     <form onSubmit={handleSubmit}>
+                      <div className="input-group mb-1">
+                        <label className="block text-sm font-medium text-gray-700">Stock Picture</label>
+                        <input
+                          type="file"
+                          name="stockPicture"
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                              setFormData({ ...formData, stockPicture: file });
+                            }
+                          }}
+                          className="mt-1 py-1 block w-full text-sm  border border-themeBorder rounded-lg cursor-pointer bg-background focus:outline-none"
+                          accept="image/*"
+                        />
+                        {formData.stockPicture && (
+                          <div className="mt-2 text-sm text-gray-500">
+                            Current File: {typeof formData.stockPicture === "string" ? formData.stockPicture : formData.stockPicture.name}
+                          </div>
+                        )}
+                        {errors.stockPicture && <div className="text-red-500 text-sm mt-1">{errors.stockPicture}</div>}
+                      </div>
                       <div className="input-group mb-1">
                         <ThemeInput
                           label="Name"

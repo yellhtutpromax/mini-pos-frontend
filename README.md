@@ -1,6 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
+##    "dev": "next dev -H 196.1.1.154 -p 5000",
 
 First, run the development server:
 
@@ -34,3 +35,10 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+## Manually Allow Camera Access for Insecure HTTP (Chrome Flag)
+## 1 chrome://flags/#unsafely-treat-insecure-origin-as-secure
+## 2 Find “Insecure origins treated as secure”.
+## 3 Enable it and enter
+## 4 http://192.1.1.154:4000 ( past the address the you want to access )

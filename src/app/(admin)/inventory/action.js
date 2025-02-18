@@ -148,9 +148,7 @@ const editFormData = async (formData) => {
 const fetchStocksData = async () => {
   try {
     // Prepare the SQL query
-    const sql = `SELECT *
-                 FROM stocks
-                 ORDER BY id DESC`
+    const sql = `SELECT * FROM stocks ORDER BY id DESC`
 
     // Execute the query
     const [rows] = await mysqlDb.execute(sql)

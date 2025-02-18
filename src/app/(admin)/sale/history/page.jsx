@@ -3,8 +3,8 @@
 import {useEffect, useState} from "react"
 import {ThemeInput} from "@/app/components/Form/Input/ThemeInput"
 import StockBlock from "@/app/components/Stock/StockBlock"
-import {fetchSaleData} from "@/app/(admin)/sell/history/action"
-import SellBlock from "@/app/components/Sell/SellBlock";
+import {fetchSaleData} from "@/app/(admin)/sale/history/action"
+import SellBlock from "@/app/components/Sale/SellBlock";
 
 const Sell = () => {
   const [sales, setSalesData] = useState([])

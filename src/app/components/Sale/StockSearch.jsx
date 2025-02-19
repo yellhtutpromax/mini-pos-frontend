@@ -5,7 +5,7 @@ import {Select, SelectItem, Avatar, Chip} from "@heroui/react"
 
 const StockSearch = ({optionItems, isHide= false, selectedItems}) => {
 
-  const [selectedIds, setSelectedIds] = useState([2,3])
+  const [selectedIds, setSelectedIds] = useState([])
 
   const toArray = (input) => {
     if (typeof input === "string") {

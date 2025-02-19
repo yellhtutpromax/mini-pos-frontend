@@ -116,19 +116,20 @@ const Sell = () => {
             - {selectedIds.length} Items
           </div>
         </div>
+        <div className={`${selectedIds.length == '0' ? 'invisible' : 'visible'} flex items-center justify-center cursor-pointer`}>
+          <div
+            onClick={() => setSearchInputHidden(!searchInputHidden)}
+            className="text-themeSecondary text-xs"
+          >
+            {searchInputHidden ? "Show" : "Hide"}
+          </div>
+        </div>
         <Button className="bg-transparent border border-themeBorder" onPress={() => {
         }}>
           <div className="text-left text-themeSecondary text-base font-semibold">Scan</div>
         </Button>
       </div>
-      {/*<div className="flex items-center justify-end mt-7 mr-2 cursor-pointer">*/}
-      {/*  <div*/}
-      {/*    onClick={() => setSearchInputHidden(!searchInputHidden)}*/}
-      {/*    className="text-themeSecondary text-xs"*/}
-      {/*  >*/}
-      {/*    {searchInputHidden ? "Show" : "Hide"}*/}
-      {/*  </div>*/}
-      {/*</div>*/}
+
       <div className="input-group mb-5">
         <StockSearch
           optionItems={optionItems}

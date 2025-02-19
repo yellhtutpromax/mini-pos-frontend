@@ -27,7 +27,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between h-10 mb-3">
+      <div className="flex items-center justify-between h-5 mb-3">
         <div className="text-xl font-bold flex items-center">
           <span>Dashboard</span>
         </div>

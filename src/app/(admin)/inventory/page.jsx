@@ -162,7 +162,7 @@ const Inventory = () => {
       <div className="flex items-center justify-between h-5 ">
         <div className="text-xl font-bold flex items-center">
           <span>Inventory</span>
-          <div className={`ml-2 ${totalStock === 0 ? 'invisible' : 'visible'}`}>( {totalStock} Items )</div>
+          <div className={`ml-2 ${totalStock === 0 ? 'invisible' : 'visible'}`}>- {totalStock} Items </div>
         </div>
         <Button className="bg-transparent border border-themeBorder" onPress={() => {
           onOpen()

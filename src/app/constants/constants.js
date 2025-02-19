@@ -39,7 +39,7 @@ const usersDb = [
 const navDb = [
   {
     id: 1,
-    name: "Sell",
+    name: "Sale",
     route: "sale",
     iconPath: "sell.svg",
     iconActivePath: "sell_white.svg",

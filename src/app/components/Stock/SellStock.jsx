@@ -67,8 +67,14 @@ const SellStock = ({ isOpen, onOpenChange, stock }) => {
               <div className="ml-3 pt-5 text-white text-sm">Sell Item</div>
               <div className="border border-themeBorder my-2"></div>
               <ModalBody className="p-2">
-                <div className="font-bold text-sm ml-2">You are selling: <strong>{stock.name}</strong></div>
-                <div className="font-bold text-sm ml-2">Available Quantity: <strong>{stock.quantity} Pcs</strong></div>
+                <div className="flex justify-between items-center">
+                  <div className="text-themeSecondary text-sm ml-2">You are selling:</div>
+                  <div className="text-sm text-white"> {stock.name}</div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="text-themeSecondary text-sm ml-2">Available Quantity: </div>
+                  <div className="text-sm text-white"> {stock.quantity} Pcs</div>
+                </div>
                 <div className="input-group mb-1">
                   <ThemeInput
                     label="Quantity"

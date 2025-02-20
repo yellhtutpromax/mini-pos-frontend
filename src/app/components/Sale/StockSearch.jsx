@@ -21,7 +21,7 @@ const StockSearch = ({optionItems, isHide= false, selectedItems}) => {
     const convertedArray = toArray(currentSelected)
     setSelectedIds(convertedArray)
     selectedItems(convertedArray)
-    console.table(convertedArray)
+    // console.table(convertedArray)
   }
 
   useEffect(() => {

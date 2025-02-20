@@ -50,7 +50,6 @@ const SellStock = ({ isOpen, onOpenChange, stock }) => {
       } else {
         console.log("Failed to save sale:", result.message)
         setError("Invalid quantity. Please enter a value between 1 and the available quantity.")
-
       }
     } catch (error) {
       console.log("Error during sale:", error)
@@ -67,12 +66,12 @@ const SellStock = ({ isOpen, onOpenChange, stock }) => {
               <div className="ml-3 pt-5 text-white text-sm">Sell Item</div>
               <div className="border border-themeBorder my-2"></div>
               <ModalBody className="p-2">
-                <div className="flex justify-between items-center">
-                  <div className="text-themeSecondary text-sm ml-2">You are selling:</div>
-                  <div className="text-sm text-white"> {stock.name}</div>
+                <div className="flex justify-items-start items-center">
+                  <div className="text-gray-400 text-sm ml-1 mr-10">You are selling:</div>
+                  <div className="text-sm text-white ml-5"> {stock.name}</div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <div className="text-themeSecondary text-sm ml-2">Available Quantity: </div>
+                <div className="flex justify-items-start items-center">
+                  <div className="text-gray-400 text-sm ml-1 mr-10">Available Quantity: </div>
                   <div className="text-sm text-white"> {stock.quantity} Pcs</div>
                 </div>
                 <div className="input-group mb-1">

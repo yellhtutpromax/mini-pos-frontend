@@ -16,7 +16,7 @@ const Header = React.memo(({authUser}) => {
   return (
     <>
       <header
-        className="md:w-3/4 md:mb-5 md:rounded-b-xl overflow-hidden bg-background border border-themeBorder sm:w-themeContainer mx-auto w-full min-h-5 shadow fixed bottom-0 z-50 left-1/2 transform -translate-x-1/2">
+        className="w-full md:w-3/4 md:mx-auto md:mb-5 md:rounded-b-xl overflow-hidden bg-background border border-themeBorder sm:w-themeContainer min-h-5 shadow fixed bottom-0 z-50 left-1/2 transform -translate-x-1/2">
         <div className="sm:w-themeContainer mx-auto flex justify-between items-center">
           {navDb.map((navItem) => {
             const isActive = pathname === `/${navItem.route}`;

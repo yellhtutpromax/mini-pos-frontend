@@ -5,10 +5,11 @@ import {fetchStockByBarcode} from "@/app/(admin)/sale/action"
 import StockSearch from "@/app/components/Sale/StockSearch"
 import {Button, Divider, Spinner} from "@nextui-org/react"
 import {useDisclosure} from "@heroui/modal"
-import {Tabs, Tab, Chip} from "@heroui/react";
-import {ThemeInput} from "@/app/components/Form/Input/ThemeInput"
+import {Tabs, Tab, Chip} from "@heroui/react"
 import SellStock from "@/app/components/Stock/SellStock"
 import dynamic from 'next/dynamic'
+import {Textarea} from "@nextui-org/input";
+import {ThemeInput} from "@/app/components/Form/Input/ThemeInput";
 
 // Dynamically import the scanner to avoid SSR issues
 const BarcodeScannerComponent = dynamic(
@@ -25,6 +26,8 @@ const Sell = () => {
   const [cameraError, setCameraError] = useState(null)
   const [totalPrice, setTotalPrice] = useState(0)
   const [searchInputHidden, setSearchInputHidden] = useState(false)
+  const [isDiscount, setIsDiscount] = useState(false)
+  const [discountAmount, setDiscountAmount] = useState(0)
   const [selectedIds, setSelectedIds] = useState([])
   const [selectedStock, setSelectedStock] = useState(null)
   const [quantities, setQuantities] = useState({})
@@ -95,12 +98,13 @@ const Sell = () => {
     // console.log(mutantObject)
     // Create a new object based on the previous state
     setMutantObject((prevState) => [
-      ...prevState.filter((obj) => selectedIds.includes(obj.id)), // Keep existing selected
-      ...selectedIds.filter((id) => !prevState.some((obj) => obj.id === id)).map((id) => ({
-        id,
-        quantity: 1,
-      })),
-    ]);
+      ...selectedIds.map((id) => {
+        const selectedItem = optionItems.find((item) => item.id === id)
+        const selectedAmount = selectedItem && selectedItem.sell_amount // Get the name or a fallback value
+        const existingObj = prevState.find((obj) => obj.id === id)
+        return existingObj ? existingObj : { id, quantity: 1, amount: Number(selectedAmount) }
+      }),
+    ])
 
   }
 
@@ -120,7 +124,12 @@ const Sell = () => {
   }, [])
 
   useEffect(() => {
+    // Ensure amounts are numbers before summing
+    const netAmount = mutantObject.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    setTotalPrice(netAmount)
     console.table(mutantObject)
+    console.log("Total Amount:", totalPrice);
+    console.log('*******************')
   }, [mutantObject])
 
   return (
@@ -145,7 +154,6 @@ const Sell = () => {
           <div className="text-left text-themeSecondary text-base font-semibold">Scan</div>
         </Button>
       </div>
-
       <div className="flex w-full flex-col">
         <Tabs
           aria-label="Options"
@@ -175,7 +183,7 @@ const Sell = () => {
               />
             </div>
             {selectedIds.length !== 0 &&
-              <div className="w-full md:w-3/4 md:mx-auto print-box overflow-hidden border border-themeBorder p-2 bg-background rounded-lg shadow-md">
+              <div className="w-full md:w-3/4 md:mx-auto print-box overflow-hidden border border-themeBorder p-2 bg-background rounded-lg shadow-md mb-16">
                 {/* Receipt Header */}
                 <div className="text-2xl font-semibold text-center text-slate-300">Mesoft Receipt</div>
                 <div className="border-b-1 border-dashed border-gray-400 my-3 mt-5"></div>
@@ -188,31 +196,63 @@ const Sell = () => {
                 </div>
                 <div className="border-b-1 border-dashed border-gray-400"></div>
                 {/* Items List */}
-                {optionItems.map((item, index) => (
-                  selectedIds.includes(item.id) && ( // Conditional rendering
-                    <div
-                      key={index}
-                      onClick={() => handleSell(item)}
-                      className="py-3 md:py-6 border-b border-b-gray-500 cursor-pointer"
-                    >
-                      <div className="flex items-center justify-between text-slate-300">
-                        <div className="w-1/3 text-sm text-wrap">{item.name}</div>
-                        <div className="w-1/4 text-sm text-center">{mutantObject.find((obj) => obj.id === item.id)?.quantity || 1}</div>
-                        <div className="w-1/4 text-sm text-left font-medium">{Number(item.sell_amount).toLocaleString()}</div>
-                        <div className="w-1/4 text-sm text-right font-medium">{Number(item.sell_amount)}</div>
+                {optionItems.map((item, index) => {
+                  const quantity = mutantObject.find((obj) => obj.id === item.id)?.quantity || 1
+                  return (
+                    selectedIds.includes(item.id) && ( // Conditional rendering
+                      <div
+                        key={index}
+                        onClick={() => handleSell(item)}
+                        className="py-3 md:py-6 border-b border-b-gray-500 cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between text-slate-300">
+                          <div className="w-1/3 text-sm text-wrap">{item.name}</div>
+                          <div className="w-1/4 text-sm text-center">{quantity}</div>
+                          <div className="w-1/4 text-sm text-left font-medium">
+                            {Number(item.sell_amount).toLocaleString()}
+                          </div>
+                          <div className="w-1/4 text-sm text-right font-medium">{Number(item.sell_amount) * quantity }</div>
+                        </div>
                       </div>
-                    </div>
+                    )
                   )
-                ))}
+                })}
+
                 {/* Total Section */}
-                <div className="mt-4 text-right">
-                  <span className="text-medium font-bold text-slate-300">Total: 3,400,000 MMK</span>
+                <div className="flex items-center justify-between mt-8">
+                  <div
+                    onClick={() => setIsDiscount(!isDiscount)}
+                    className="text-themeSecondary text-sm cursor-pointer"
+                  >
+                    {isDiscount ? <p className="text-danger">Remove Discount</p> : "Discount"}
+                  </div>
+                  <div className={`${isDiscount ? "visible": "invisible"} text-right text-sm text-slate-400`}>Discount Amount: {Number(discountAmount).toLocaleString()} MMK</div>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <div className={`w-1/2 mt-3 input-group ${isDiscount ? "visible": "invisible"} `}>
+                    <ThemeInput
+                      label={false}
+                      type="number"
+                      id="discount"
+                      name="discount"
+                      placeholder="Discount"
+                      min={1}
+                      onChange={(e) => setDiscountAmount(e.target.value)}
+                      // max={stock.quantity}
+                      // onChange={(e) => {}}
+                    />
+                    {/*{error && <div className="text-red-500 text-sm mt-1">{error}</div>}*/}
+                  </div>
+                  <div className="w-1/2 mt-4 text-right">
+                    <span className="text-right text-medium font-bold text-slate-300">Total: {Number(totalPrice) - Number(discountAmount) } MMK</span>
+                  </div>
                 </div>
                 <Button
                   disabled={loading}
                   size="sm"
                   type="submit"
-                  className="bg-themeSecondary float-end mt-10 mb-3"
+                  className="bg-themeSecondary float-end mt-10 mb-5"
                   radius="full"
                 >
                   {loading ? <Spinner size="sm" color="white"/> : "Check Out" }
@@ -257,7 +297,13 @@ const Sell = () => {
       {/*  </div>*/}
       {/*)}*/}
       {/* SellStock Modal */}
-      <SellStock isOpen={isSellModalOpen} onOpenChange={onSellModalOpenChange} stock={selectedStock}/>
+      <SellStock
+        isOpen={isSellModalOpen}
+        onOpenChange={onSellModalOpenChange}
+        stock={selectedStock}
+        setMutantObject={setMutantObject}
+        mutantObject={mutantObject}
+      />
     </>
   )
 }

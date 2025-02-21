@@ -19,9 +19,13 @@ export const ThemeInput = ({
                            }) => {
   return (
     <>
-      <div>
-        <label htmlFor={`${id}`} className="text-white text-xs ml-1">{label}</label>
-      </div>
+      {label !== false && (
+        <div>
+          <label htmlFor={id} className="text-white text-xs ml-1">
+            {label}
+          </label>
+        </div>
+      )}
       <Input
         radius={'sm'}
         type={type}

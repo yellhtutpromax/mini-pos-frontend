@@ -1,20 +1,20 @@
 'use client'
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal"
+import { Modal, ModalBody, ModalContent } from "@heroui/modal"
 import { Button } from "@nextui-org/react"
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import { ThemeInput } from "@/app/components/Form/Input/ThemeInput"
 import {fetchStocksData, saveSale} from "@/app/(admin)/inventory/action" // Import the server action for saving sales
-import {useAuth} from "@/app/lib/authContext";
-import {Textarea} from "@nextui-org/input";
+import {useAuth} from "@/app/lib/authContext"
+import {Textarea} from "@nextui-org/input"
 
 
-const SellStock = ({ isOpen, onOpenChange, stock }) => {
+const SellStock = ({ isOpen, onOpenChange, stock, setMutantObject, mutantObject }) => {
 
-  const { authUser, loading } = useAuth();
+  const { authUser, loading } = useAuth()
   const [quantity, setQuantity] = useState(1)
   const [error, setError] = useState('')
-  const [showNotes, setShowNotes] = useState(false);
-  const [notes, setNotes] = useState('');  // Add state for notes
+  const [showNotes, setShowNotes] = useState(false)
+  const [notes, setNotes] = useState('')  // Add state for notes
 
   const handleSell = async (e) => {
     e.preventDefault()
@@ -28,6 +28,15 @@ const SellStock = ({ isOpen, onOpenChange, stock }) => {
       // Calculate total amount
       const unitPrice = stock.sell_amount // Assuming `sell_amount` is the unit price
       const totalAmount = unitPrice * quantity
+
+      // Update the mutantObject state
+      setMutantObject((prevState) => {
+        return prevState.map((obj) =>
+          obj.id === stock.id ? { ...obj, quantity: quantity, amount: totalAmount } : obj
+        )
+      })
+
+      return
 
       // Prepare the sale data
       const saleData = {
@@ -57,6 +66,12 @@ const SellStock = ({ isOpen, onOpenChange, stock }) => {
     }
   }
 
+  useEffect(() => {
+    console.log('----------')
+    console.log('sell stock is running')
+    // console.table(mutantObject)
+  }, [])
+
   return (
     <Modal backdrop="blur" placement="center" className="bg-background" isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
@@ -81,23 +96,26 @@ const SellStock = ({ isOpen, onOpenChange, stock }) => {
                     id="quantity"
                     name="quantity"
                     value={quantity}
-                    min="1"
+                    // value={currentQuantity}
+                    // value={
+                    //   mutantObject.find((obj) => obj.id === stock.id)?.quantity || 1
+                    // }
+                    min={1}
                     max={stock.quantity}
                     onChange={(e) => {
-                      let value = e.target.value;
+                      let value = e.target.value
                       // Prevent entering negative values or non-numeric input
-                      if (!/^\d*$/.test(value)) return;
+                      if (!/^\d*$/.test(value)) return
                       // Convert the value to a number
-                      const parsedValue = value === "" ? "" : Math.max(1, Math.min(stock.quantity, parseInt(value, 10)));
+                      const parsedValue = value === "" ? "" : Math.max(1, Math.min(stock.quantity, parseInt(value, 10)))
                       // Update state
-                      setQuantity(parsedValue);
+                      setQuantity(parsedValue)
                     }}
                     required={true}
                   />
                   {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
                 </div>
-                <div onClick={() => setShowNotes(!showNotes)} className="text-themeSecondary my-1 ml-2 text-sm">Add
-                  Notes {showNotes}</div>
+                <div onClick={() => setShowNotes(!showNotes)} className="text-themeSecondary my-1 ml-2 text-sm">Add Notes {showNotes}</div>
                 <div className={`input-group mb-1 ${showNotes ? '' : 'hidden'}`}>
                   <Textarea
                     name="notes"

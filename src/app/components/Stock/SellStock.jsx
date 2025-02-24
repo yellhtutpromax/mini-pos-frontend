@@ -7,8 +7,7 @@ import {fetchStocksData, saveSale} from "@/app/(admin)/inventory/action" // Impo
 import {useAuth} from "@/app/lib/authContext"
 import {Textarea} from "@nextui-org/input"
 
-
-const SellStock = ({ isOpen, onOpenChange, stock, setMutantObject, mutantObject }) => {
+const SellStock = ({ isOpen, onOpenChange, stock, setMutantObject, mutantObject, handleSelectedIds }) => {
 
   const { authUser, loading } = useAuth()
   const [quantity, setQuantity] = useState(1)
@@ -35,7 +34,8 @@ const SellStock = ({ isOpen, onOpenChange, stock, setMutantObject, mutantObject 
           obj.id === stock.id ? { ...obj, quantity: quantity, amount: totalAmount } : obj
         )
       })
-
+      onOpenChange(false)
+      // setQuantity(1)
       return
 
       // Prepare the sale data
@@ -58,7 +58,7 @@ const SellStock = ({ isOpen, onOpenChange, stock, setMutantObject, mutantObject 
         stock.quantity = stock.quantity - quantity
       } else {
         console.log("Failed to save sale:", result.message)
-        setError("Invalid quantity. Please enter a value between 1 and the available quantity.")
+        setError("Internal Server Error")
       }
     } catch (error) {
       console.log("Error during sale:", error)
@@ -66,11 +66,22 @@ const SellStock = ({ isOpen, onOpenChange, stock, setMutantObject, mutantObject 
     }
   }
 
+  // const mutantDelete = () => {
+  //   console.log("Deleting mutant:", stock)
+  //   setMutantObject((prevState) => {
+  //     const updatedState = prevState.filter((obj) => obj.id !== stock.id);
+  //     // Ensure handleSelectedIds uses the updated state
+  //     handleSelectedIds(updatedState.map((obj) => obj.id));
+  //     return updatedState;
+  //   });
+  //   onOpenChange(false)
+  // }
+
   useEffect(() => {
-    console.log('----------')
-    console.log('sell stock is running')
-    // console.table(mutantObject)
-  }, [])
+    console.clear()
+    let currentQuantity = mutantObject.find((obj)=> obj.id === stock.id && mutantObject);
+    setQuantity(currentQuantity?.quantity)
+  }, [stock])
 
   return (
     <Modal backdrop="blur" placement="center" className="bg-background" isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -95,8 +106,8 @@ const SellStock = ({ isOpen, onOpenChange, stock, setMutantObject, mutantObject 
                     type="number"
                     id="quantity"
                     name="quantity"
+                    autoFocus={true}
                     value={quantity}
-                    // value={currentQuantity}
                     // value={
                     //   mutantObject.find((obj) => obj.id === stock.id)?.quantity || 1
                     // }
@@ -131,8 +142,8 @@ const SellStock = ({ isOpen, onOpenChange, stock, setMutantObject, mutantObject 
               </ModalBody>
               <div className="border border-themeBorder my-2"></div>
               <div className="flex justify-end space-x-2 p-3">
-                <Button className="border-danger-900 text-danger" onPress={onClose}>Close</Button>
-                <Button type="submit" className="bg-themeSecondary text-white">Sell</Button>
+                {/*<Button className="border-danger-900 text-danger" onPress={mutantDelete}>Delete</Button>*/}
+                <Button type="submit" className="bg-themeSecondary text-white">Update</Button>
               </div>
             </form>
           </>

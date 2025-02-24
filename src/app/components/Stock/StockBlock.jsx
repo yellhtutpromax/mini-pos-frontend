@@ -22,12 +22,12 @@ const StockBlock = ({stock, onEdit, onSell, fetchLoading}) => {
               </div>
             </div>
             <div>
-              <Button
-                className="bg-transparent border border-danger-300"
-                onPress={() => onSell(stock)}
-              >
-                <div className="text-left text-danger text-base font-semibold">Sell</div>
-              </Button>
+              {/*<Button*/}
+              {/*  className="bg-transparent border border-danger-300"*/}
+              {/*  onPress={() => onSell(stock)}*/}
+              {/*>*/}
+              {/*  <div className="text-left text-danger text-base font-semibold">Sell</div>*/}
+              {/*</Button>*/}
             </div>
           </div>
           <div className="border border-themeBorder my-2"></div>

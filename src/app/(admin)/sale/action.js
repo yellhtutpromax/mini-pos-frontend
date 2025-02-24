@@ -2,7 +2,7 @@
 import mysqlDb from "@/app/lib/database/mysql"
 
 // Fetch stocks by barcode
-const fetchStockByBarcode = async (barcode='') => {
+const fetchStockByBarcode = async () => {
   try {
     // Prepare the SQL query
     const sql = `SELECT * FROM stocks ORDER BY id DESC`

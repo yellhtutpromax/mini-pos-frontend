@@ -5,7 +5,7 @@ import {Select, SelectItem, Avatar, Chip} from "@heroui/react"
 
 const StockSearch = ({optionItems, isHide= false, selectedItems}) => {
 
-  const [selectedIds, setSelectedIds] = useState([])
+  const [selectedIds, setSelectedIds] = useState([2,4])
 
   const toArray = (input) => {
     if (typeof input === "string") {
@@ -47,7 +47,7 @@ const StockSearch = ({optionItems, isHide= false, selectedItems}) => {
           return (
             <>
               {items.map((item) => (
-                <Chip className="m-1 bg-background border border-themeBorder" key={item.key}>{item.data.name}</Chip>
+                <Chip className="m-1 bg-background border border-themeBorder" key={item.key.toString()}>{item.data.name}</Chip>
               ))}
             </>
           )

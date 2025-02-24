@@ -21,7 +21,6 @@ const saveFormData = async (formData) => {
         INSERT INTO stocks (user_id, name, barcode, buy_amount, sell_amount, quantity, photo, created_at, updated_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
     `
-
     // Execute the query with formData and generated barcode
     const [result] = await mysqlDb.execute(sql, [
       formData.user_id,
@@ -147,6 +146,7 @@ const editFormData = async (formData) => {
 // Fetch stocks data ordered by id DESC
 const fetchStocksData = async () => {
   try {
+
     // Prepare the SQL query
     const sql = `SELECT * FROM stocks ORDER BY id DESC`
 

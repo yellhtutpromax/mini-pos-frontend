@@ -5,7 +5,7 @@ import {Modal, ModalContent, ModalBody, useDisclosure} from "@heroui/modal"
 import {ThemeInput} from "@/app/components/Form/Input/ThemeInput"
 import {fetchStocksData, saveFormData, editFormData} from "@/app/(admin)/inventory/action"
 import StockBlock from "@/app/components/Stock/StockBlock"
-import SellStock from "@/app/components/Stock/SellStock"
+// import SellStock from "@/app/components/Stock/SellStock"
 import {useAuth} from "@/app/lib/authContext";
 
 const Inventory = () => {
@@ -171,7 +171,7 @@ const Inventory = () => {
           <div className="text-left text-themeSecondary text-base font-semibold">Entry</div>
         </Button>
       </div>
-      <div className="input-group mb-5">
+      <div className="input-group mb-5 mt-5">
         <ThemeInput
           label={false}
           type="text"
@@ -194,7 +194,7 @@ const Inventory = () => {
                 key={stock.id}
                 stock={stock}
                 onEdit={handleEdit}
-                onSell={handleSell}
+                // onSell={handleSell}
                 fetchLoading={fetchLoading}
               />
             ))}
@@ -302,7 +302,7 @@ const Inventory = () => {
           </ModalContent>
         </Modal>
         {/* SellStock Modal */}
-        <SellStock isOpen={isSellModalOpen} onOpenChange={onSellModalOpenChange} stock={selectedStock}/>
+        {/*<SellStock isOpen={isSellModalOpen} onOpenChange={onSellModalOpenChange} stock={selectedStock}/>*/}
       </div>
     </>
   )

@@ -3,7 +3,7 @@ import { decrypt, refreshAccessToken, deleteSession } from '@/app/lib/session';
 import { cookies } from 'next/headers';
 
 // Protected and public routes
-const protectedRoutes = ['/dashboard', '/inventory', '/sell'];
+const protectedRoutes = ['/dashboard', '/inventory', '/sale'];
 const publicRoutes = ['/auth/login', '/signup', '/'];
 
 export default async function middleware(req) {

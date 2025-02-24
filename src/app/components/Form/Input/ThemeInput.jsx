@@ -7,6 +7,7 @@ export const ThemeInput = ({
                              name = "example",
                              id,          // Unique identifier for the input
                              value,
+                             autoFocus = false,
                              onChange,
                              onBlur,
                              onFocus,
@@ -36,7 +37,8 @@ export const ThemeInput = ({
         }}
         id={id}
         name={name}
-        value={value}
+        autoFocus={autoFocus}
+        value={value || ''}  // Ensure value is always defined
         onChange={onChange}
         onBlur={onBlur}
         onFocus={onFocus}

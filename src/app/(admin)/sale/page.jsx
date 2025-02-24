@@ -1,14 +1,15 @@
 "use client"
 
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import {fetchStockByBarcode} from "@/app/(admin)/sale/action"
-import StockSearch from "@/app/components/Sale/StockSearch"
-import {Button, Divider, Spinner} from "@nextui-org/react"
-import {useDisclosure} from "@heroui/modal"
-import {Tabs, Tab, Chip} from "@heroui/react"
+import {paymentMethods} from "@/app/constants/constants";
 import SellStock from "@/app/components/Stock/SellStock"
+import StockSearch from "@/app/components/Sale/StockSearch"
+import {Button, Spinner} from "@nextui-org/react"
+import {useDisclosure} from "@heroui/modal"
+import {Tabs, Tab} from "@heroui/react"
+import {Select, SelectItem} from "@heroui/react"
 import dynamic from 'next/dynamic'
-import {Textarea} from "@nextui-org/input";
 import {ThemeInput} from "@/app/components/Form/Input/ThemeInput";
 
 // Dynamically import the scanner to avoid SSR issues
@@ -24,10 +25,12 @@ const Sell = () => {
   const [isScanning, setIsScanning] = useState(false)
   const [product, setProduct] = useState(null)
   const [cameraError, setCameraError] = useState(null)
-  const [totalPrice, setTotalPrice] = useState(0)
   const [searchInputHidden, setSearchInputHidden] = useState(false)
+  const [paymentMethod, setPaymentMethod] = useState(paymentMethods[0]?.id.toString())
+  const [totalPrice, setTotalPrice] = useState(0)
   const [isDiscount, setIsDiscount] = useState(false)
   const [discountAmount, setDiscountAmount] = useState(0)
+  const [depositAmount, setDeposit] = useState(0)
   const [selectedIds, setSelectedIds] = useState([])
   const [selectedStock, setSelectedStock] = useState(null)
   const [quantities, setQuantities] = useState({})
@@ -132,6 +135,8 @@ const Sell = () => {
     console.log('*******************')
   }, [mutantObject])
 
+  const finalTotal = useMemo(() => Number(totalPrice) - Number(discountAmount), [totalPrice, discountAmount]);
+
   return (
     <>
       <div className="flex items-center justify-between h-5 ">
@@ -218,15 +223,55 @@ const Sell = () => {
                   )
                 })}
 
-                {/* Total Section */}
-                <div className="flex items-center justify-between mt-8">
-                  <div
-                    onClick={() => setIsDiscount(!isDiscount)}
-                    className="text-themeSecondary text-sm cursor-pointer"
-                  >
-                    {isDiscount ? <p className="text-danger">Remove Discount</p> : "Discount"}
+                {/* Net Total Section */}
+                <div className={`text-right mt-5 text-sm text-slate-400`}>Net Total: {Number(totalPrice).toLocaleString()} MMK</div>
+
+                <div className="flex gap-3 justify-between items-center  mb-5 ">
+                  <div className="w-1/2">
+                    <Select
+                      classNames={{
+                        base: "w-full mt-4",
+                        trigger: "border border-themeBorder",
+                      }}
+                      label={false}
+                      aria-label={"Payment Method"}
+                      // placeholder="Payment Method"
+                      selectedKeys={[paymentMethod]} // Auto-select the first item
+                      variant="bordered"
+                      onSelectionChange={(keys) => setPaymentMethod([...keys][0])} // Extract selected key
+                    >
+                      {paymentMethods.map((payment) => (
+                        <SelectItem key={payment.id} value={payment.id.toString()} >{payment.name}</SelectItem>
+                      ))}
+                    </Select>
                   </div>
-                  <div className={`${isDiscount ? "visible": "invisible"} text-right text-sm text-slate-400`}>Discount Amount: {Number(discountAmount).toLocaleString()} MMK</div>
+                  <div className={`w-1/2 mt-3 input-group`}>
+                    <ThemeInput
+                      customClassName={``}
+                      label={false}
+                      type="number"
+                      id="deposit"
+                      name="deposit"
+                      placeholder="Deposit"
+                      min={1}
+                      value={depositAmount}
+                      onChange={(e) => setDeposit(e.target.value)}
+                    />
+                    {/*{error && <div className="text-red-500 text-sm mt-1">{error}</div>}*/}
+                  </div>
+                </div>
+                <div className="border-b-1 border-gray-600"></div>
+                <div className="flex items-center justify-between mt-3">
+                  <div
+                    className="text-themeSecondary text-sm cursor-pointer"
+                    onClick={() => {
+                      setIsDiscount(!isDiscount);
+                      setDiscountAmount(0);
+                    }}
+                  >
+                    {isDiscount ? <p className="text-danger ml-1">Remove</p> : "Discount"}
+                  </div>
+                  <div className={`${isDiscount ? "visible": "invisible"} text-right text-sm text-warning-500`}>Discount: {Number(discountAmount).toLocaleString()} MMK</div>
                 </div>
 
                 <div className="flex justify-between items-center">
@@ -238,6 +283,7 @@ const Sell = () => {
                       name="discount"
                       placeholder="Discount"
                       min={1}
+                      value={discountAmount}
                       onChange={(e) => setDiscountAmount(e.target.value)}
                       // max={stock.quantity}
                       // onChange={(e) => {}}
@@ -245,14 +291,15 @@ const Sell = () => {
                     {/*{error && <div className="text-red-500 text-sm mt-1">{error}</div>}*/}
                   </div>
                   <div className="w-1/2 mt-4 text-right">
-                    <span className="text-right text-medium font-bold text-slate-300">Total: {Number(totalPrice) - Number(discountAmount) } MMK</span>
+                    <span className="text-right text-medium font-bold text-slate-300">Total: { finalTotal.toLocaleString() } MMK</span>
                   </div>
                 </div>
+                <div className="border-b border-b-gray-700 mt-7"></div>
                 <Button
                   disabled={loading}
                   size="sm"
                   type="submit"
-                  className="bg-themeSecondary float-end mt-10 mb-5"
+                  className="bg-themeSecondary float-end mt-5 mb-2"
                   radius="full"
                 >
                   {loading ? <Spinner size="sm" color="white"/> : "Check Out" }
@@ -300,6 +347,7 @@ const Sell = () => {
       <SellStock
         isOpen={isSellModalOpen}
         onOpenChange={onSellModalOpenChange}
+        handleSelectedIds={handleSelectedIds}
         stock={selectedStock}
         setMutantObject={setMutantObject}
         mutantObject={mutantObject}

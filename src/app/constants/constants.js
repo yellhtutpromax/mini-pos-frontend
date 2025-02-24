@@ -64,6 +64,30 @@ const navDb = [
 
 ];
 
+const paymentMethods = [
+  {
+    id: 1,
+    name: "KBZ Pay",
+  },
+  {
+    id: 2,
+    name: "Cash",
+  },
+  {
+    id: 3,
+    name: "Cash on Delivery",
+  },
+  {
+    id: 4,
+    name: "KBZ Banking",
+  },
+  {
+    id: 5,
+    name: "Wave Money",
+  },
+
+]
+
 const sampleUsers = [
   {
     id: 1,
@@ -270,5 +294,6 @@ const sampleUsers = [
 module.exports = {
   usersDb,
   navDb,
-  sampleUsers
+  sampleUsers,
+  paymentMethods
 };

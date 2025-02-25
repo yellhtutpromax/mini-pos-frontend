@@ -53,7 +53,7 @@ export default function RootLayout({ children }) {
     >
     <Providers>
       <HeroUIProvider>
-        <ToastProvider />
+        <ToastProvider placement={"bottom-right"} />
         <AuthProvider>
           <LayoutProvider>
             <LayoutRenderer>{children}</LayoutRenderer>

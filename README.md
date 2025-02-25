@@ -51,7 +51,7 @@ _______
 id
 receipt_code
 sale_ids
-seller_id
+user_id
 discount
 total_amount
 payment_method

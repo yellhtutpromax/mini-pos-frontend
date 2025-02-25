@@ -2,6 +2,9 @@
 
 import {Button, Card, Skeleton} from "@nextui-org/react";
 import Image from 'next/image';
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 const StockBlock = ({stock, onEdit, onSell, fetchLoading}) => {
   return (
@@ -71,7 +74,7 @@ const StockBlock = ({stock, onEdit, onSell, fetchLoading}) => {
             </div>
             <div className="flex flex-col justify-start items-start">
               <div>Updated At:</div>
-              <div>{new Date(stock.updated_at).toLocaleString()}</div>
+              <div>{dayjs(stock.updated_at).fromNow()}</div>
             </div>
           </div>
         </div>

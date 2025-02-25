@@ -1,6 +1,7 @@
 "use client";
 
 import {useMemo, createContext, useContext, memo} from "react";
+import {HeroUIProvider, ToastProvider} from '@heroui/react'
 import localFont from "next/font/local";
 import "./styles/globals.css";
 import { Providers } from "./providers";
@@ -51,11 +52,14 @@ export default function RootLayout({ children }) {
       className={`${montserratMedium.variable} ${geistMono.variable} antialiased bg-foreground min-h-[100dvh]`}
     >
     <Providers>
-      <AuthProvider>
-        <LayoutProvider>
-          <LayoutRenderer>{children}</LayoutRenderer>
-        </LayoutProvider>
-      </AuthProvider>
+      <HeroUIProvider>
+        <ToastProvider />
+        <AuthProvider>
+          <LayoutProvider>
+            <LayoutRenderer>{children}</LayoutRenderer>
+          </LayoutProvider>
+        </AuthProvider>
+      </HeroUIProvider>
     </Providers>
     </body>
     </html>

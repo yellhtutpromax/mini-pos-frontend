@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs' // Ensure bcryptjs is imported
 
 // Generate a unique 15-digit barcode
-const generateBarcode = async () => {
+const generateUniqueString = async (prefix= '') => {
   const rawValue = `${Date.now()}${Math.floor(Math.random() * 1000)}`
   const salt = await bcrypt.genSalt(10)
   const hashedBarcode = await bcrypt.hash(rawValue, salt)
@@ -13,9 +13,9 @@ const generateBarcode = async () => {
     numericBarcode += Math.floor(Math.random() * 10) // Add random digits if needed
   }
 
-  return numericBarcode
+  return prefix + numericBarcode
 }
 
 export {
-  generateBarcode
+  generateUniqueString
 }

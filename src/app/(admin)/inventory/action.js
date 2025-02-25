@@ -1,7 +1,7 @@
 'use server'
 
 import mysqlDb from "@/app/lib/database/mysql"
-import {generateBarcode} from "@/app/utils/generator"
+import {generateUniqueString} from "@/app/utils/generator"
 import fs from "fs"
 import path from "path"
 
@@ -9,7 +9,7 @@ import path from "path"
 const saveFormData = async (formData) => {
   try {
     // Generate a unique barcode
-    const barcode = await generateBarcode()
+    const barcode = await generateUniqueString()
     // console.log(formData)
     let photoName = null
     if(formData.stockPicture) {
@@ -174,7 +174,7 @@ const fetchStocksData = async () => {
 const saveSale = async (saleData) => {
   try {
 
-    const voucherCode = await generateBarcode()
+    const voucherCode = await generateUniqueString()
     const notes = saleData.notes !== undefined ? saleData.notes : null
     // Prepare the SQL query for inserting into the `sales` table
     const salesSql = `

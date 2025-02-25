@@ -1,14 +1,14 @@
 "use client"
 
 import React, {useEffect, useMemo, useState} from 'react'
-import {fetchStockByBarcode} from "@/app/(admin)/sale/action"
+import {fetchStockByBarcode, saveReceipt} from "@/app/(admin)/sale/action"
 import {paymentMethods} from "@/app/constants/constants";
 import SellStock from "@/app/components/Stock/SellStock"
 import StockSearch from "@/app/components/Sale/StockSearch"
+import {useAuth} from "@/app/lib/authContext";
 import {Button, Spinner} from "@nextui-org/react"
 import {useDisclosure} from "@heroui/modal"
-import {Tabs, Tab} from "@heroui/react"
-import {Select, SelectItem} from "@heroui/react"
+import {addToast, Select, SelectItem, Tabs, Tab} from "@heroui/react"
 import dynamic from 'next/dynamic'
 import {ThemeInput} from "@/app/components/Form/Input/ThemeInput";
 
@@ -20,6 +20,7 @@ const BarcodeScannerComponent = dynamic(
 
 const Sell = () => {
 
+  const { authUser } = useAuth();
   const [optionItems, setOptionItems] = useState([])
   const [scannedData, setScannedData] = useState(null)
   const [isScanning, setIsScanning] = useState(false)
@@ -33,66 +34,66 @@ const Sell = () => {
   const [depositAmount, setDeposit] = useState(0)
   const [selectedIds, setSelectedIds] = useState([])
   const [selectedStock, setSelectedStock] = useState(null)
-  const [quantities, setQuantities] = useState({})
+  // const [quantities, setQuantities] = useState({})
   const [loading, setLoading] = useState(false)
 
   const {isOpen: isSellModalOpen, onOpen: onSellModalOpen, onOpenChange: onSellModalOpenChange} = useDisclosure()
 
-  const getStockByBarcode = async (barcode='210803416064341') => {
-    const response = await fetchStockByBarcode(barcode)
-    console.log(response)
-    if (response.success) {
-      setProduct(response.data)
-      // setScannedData(result.text)
-      // setIsScanning(false)
-      // fetchProductData(result.text)
-    }
-  }
-
-  const handleScan = async (result) => {
-    console.log(result)
-    if (result) {
-      setScannedData(result.text)
-      setIsScanning(false)
-
-      // Fetch product information from the API
-      const response = await fetchStockByBarcode('210803416064341')
-      const productData = await response.json()
-      setProduct(productData)
-    }
-  }
-
-  const handleError = async (err) => {
-    const response = await fetchStockByBarcode('210803416064341')
-    setProduct(response.data)
-    // console.log(err)
-    // if (err.name === 'NotFoundError') {
-    //   setCameraError('No camera found. Please ensure your device has a camera and it is accessible.')
-    // } else {
-    //   setCameraError('Error accessing camera. Please grant permission and try again.')
-    // }
-  }
-
-  // Function to handle quantity change
-  const handleQuantityChange = (itemId, value) => {
-    // Ensure the value is a non-negative number
-    const newQuantity = Math.max(0, Number(value))
-    setQuantities((prevQuantities) => ({
-      ...prevQuantities,
-      [itemId]: newQuantity,
-    }))
-  }
-
-  // Calculate the total amount
-  const calculateTotal = () => {
-    return optionItems.reduce((total, item) => {
-      if (selectedIds.includes(item.id)) {
-        const qty = quantities[item.id] || 0
-        return total + qty * Number(item.sell_amount)
-      }
-      return total
-    }, 0)
-  }
+  // const getStockByBarcode = async (barcode='210803416064341') => {
+  //   const response = await fetchStockByBarcode(barcode)
+  //   console.log(response)
+  //   if (response.success) {
+  //     setProduct(response.data)
+  //     // setScannedData(result.text)
+  //     // setIsScanning(false)
+  //     // fetchProductData(result.text)
+  //   }
+  // }
+  //
+  // const handleScan = async (result) => {
+  //   console.log(result)
+  //   if (result) {
+  //     setScannedData(result.text)
+  //     setIsScanning(false)
+  //
+  //     // Fetch product information from the API
+  //     const response = await fetchStockByBarcode('210803416064341')
+  //     const productData = await response.json()
+  //     setProduct(productData)
+  //   }
+  // }
+  //
+  // const handleError = async (err) => {
+  //   const response = await fetchStockByBarcode('210803416064341')
+  //   setProduct(response.data)
+  //   // console.log(err)
+  //   // if (err.name === 'NotFoundError') {
+  //   //   setCameraError('No camera found. Please ensure your device has a camera and it is accessible.')
+  //   // } else {
+  //   //   setCameraError('Error accessing camera. Please grant permission and try again.')
+  //   // }
+  // }
+  //
+  // // Function to handle quantity change
+  // const handleQuantityChange = (itemId, value) => {
+  //   // Ensure the value is a non-negative number
+  //   const newQuantity = Math.max(0, Number(value))
+  //   setQuantities((prevQuantities) => ({
+  //     ...prevQuantities,
+  //     [itemId]: newQuantity,
+  //   }))
+  // }
+  //
+  // // Calculate the total amount
+  // const calculateTotal = () => {
+  //   return optionItems.reduce((total, item) => {
+  //     if (selectedIds.includes(item.id)) {
+  //       const qty = quantities[item.id] || 0
+  //       return total + qty * Number(item.sell_amount)
+  //     }
+  //     return total
+  //   }, 0)
+  // }
 
   const [mutantObject, setMutantObject] = useState([])
   const handleSelectedIds = (selectedIds) => {
@@ -108,13 +109,46 @@ const Sell = () => {
         return existingObj ? existingObj : { id, quantity: 1, amount: Number(selectedAmount) }
       }),
     ])
-
   }
 
   // Handle selling a stock item
   const handleSell = (stock) => {
     setSelectedStock(stock) // Set the selected stock
     onSellModalOpen() // Open the SellStock modal
+  }
+
+  const handleSubmit = async () => {
+    setLoading(true)
+    const formData =  {
+      userId: authUser.id,
+      mutantObject,
+      selectedIds,
+      depositAmount: Number(depositAmount),
+      discountAmount: Number(discountAmount),
+      totalPrice,
+      paymentMethod: Number(paymentMethod),
+    } // payload
+    console.clear()
+    console.table(formData)
+    const response = await saveReceipt(formData)
+    if (response.success) {
+      setLoading(false)
+      addToast({
+        title: "Saved",
+        description: response.message,
+        color: "success",
+        timeout: 2000
+      })
+      console.log('Sale Receipt saved successfully!')
+      console.log(response)
+      // Reset the form state
+      setMutantObject([])
+      setSelectedIds([])
+      setDeposit(0)
+      setDiscountAmount(0)
+      setTotalPrice(0)
+      // onSellModalOpenChange(false) // Close the SellStock modal
+    }
   }
 
   useEffect(() => {
@@ -131,7 +165,7 @@ const Sell = () => {
     const netAmount = mutantObject.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     setTotalPrice(netAmount)
     console.table(mutantObject)
-    console.log("Total Amount:", totalPrice);
+    console.log("Total Amount : ", totalPrice);
     console.log('*******************')
   }, [mutantObject])
 
@@ -189,121 +223,123 @@ const Sell = () => {
             </div>
             {selectedIds.length !== 0 &&
               <div className="w-full md:w-3/4 md:mx-auto print-box overflow-hidden border border-themeBorder p-2 bg-background rounded-lg shadow-md mb-16">
-                {/* Receipt Header */}
-                <div className="text-2xl font-semibold text-center text-slate-300">Mesoft Receipt</div>
-                <div className="border-b-1 border-dashed border-gray-400 my-3 mt-5"></div>
-                {/* Table Header */}
-                <div className="flex items-center justify-between text-slate-100 pb-2">
-                  <div className="w-1/3 text-sm font-semibold">Item</div>
-                  <div className="w-1/4 text-sm text-center">Qty</div>
-                  <div className="w-1/4 text-sm font-semibold text-left">Unit Price</div>
-                  <div className="w-1/4 text-sm font-semibold text-right">Amount</div>
-                </div>
-                <div className="border-b-1 border-dashed border-gray-400"></div>
-                {/* Items List */}
-                {optionItems.map((item, index) => {
-                  const quantity = mutantObject.find((obj) => obj.id === item.id)?.quantity || 1
-                  return (
-                    selectedIds.includes(item.id) && ( // Conditional rendering
-                      <div
-                        key={index}
-                        onClick={() => handleSell(item)}
-                        className="py-3 md:py-6 border-b border-b-gray-500 cursor-pointer"
-                      >
-                        <div className="flex items-center justify-between text-slate-300">
-                          <div className="w-1/3 text-sm text-wrap">{item.name}</div>
-                          <div className="w-1/4 text-sm text-center">{quantity}</div>
-                          <div className="w-1/4 text-sm text-left font-medium">
-                            {Number(item.sell_amount).toLocaleString()}
+                <form action={handleSubmit}>
+                  {/* Receipt Header */}
+                  <div className="text-2xl font-semibold text-center text-slate-300">Mesoft Receipt</div>
+                  <div className="border-b-1 border-dashed border-gray-400 my-3 mt-5"></div>
+                  {/* Table Header */}
+                  <div className="flex items-center justify-between text-slate-100 pb-2">
+                    <div className="w-1/3 text-sm font-semibold">Item</div>
+                    <div className="w-1/4 text-sm text-center">Qty</div>
+                    <div className="w-1/4 text-sm font-semibold text-left">Unit Price</div>
+                    <div className="w-1/4 text-sm font-semibold text-right">Amount</div>
+                  </div>
+                  <div className="border-b-1 border-dashed border-gray-400"></div>
+                  {/* Items List */}
+                  {optionItems.map((item, index) => {
+                    const quantity = mutantObject.find((obj) => obj.id === item.id)?.quantity || 1
+                    return (
+                      selectedIds.includes(item.id) && ( // Conditional rendering
+                        <div
+                          key={index}
+                          onClick={() => handleSell(item)}
+                          className="py-3 md:py-6 border-b border-b-gray-500 cursor-pointer"
+                        >
+                          <div className="flex items-center justify-between text-slate-300">
+                            <div className="w-1/3 text-sm text-wrap">{item.name}</div>
+                            <div className="w-1/4 text-sm text-center">{quantity}</div>
+                            <div className="w-1/4 text-sm text-left font-medium">
+                              {Number(item.sell_amount).toLocaleString()}
+                            </div>
+                            <div className="w-1/4 text-sm text-right font-medium">{Number(item.sell_amount) * quantity }</div>
                           </div>
-                          <div className="w-1/4 text-sm text-right font-medium">{Number(item.sell_amount) * quantity }</div>
                         </div>
-                      </div>
+                      )
                     )
-                  )
-                })}
+                  })}
 
-                {/* Net Total Section */}
-                <div className={`text-right mt-5 text-sm text-slate-400`}>Net Total: {Number(totalPrice).toLocaleString()} MMK</div>
+                  {/* Net Total Section */}
+                  <div className={`text-right mt-5 text-sm text-slate-400`}>Net Total: {Number(totalPrice).toLocaleString()} MMK</div>
 
-                <div className="flex gap-3 justify-between items-center  mb-5 ">
-                  <div className="w-1/2">
-                    <Select
-                      classNames={{
-                        base: "w-full mt-4",
-                        trigger: "border border-themeBorder",
+                  <div className="flex gap-3 justify-between items-center  mb-5 ">
+                    <div className="w-1/2">
+                      <Select
+                        classNames={{
+                          base: "w-full mt-4",
+                          trigger: "border border-themeBorder",
+                        }}
+                        label={false}
+                        aria-label={"Payment Method"}
+                        // placeholder="Payment Method"
+                        selectedKeys={[paymentMethod]} // Auto-select the first item
+                        variant="bordered"
+                        onSelectionChange={(keys) => setPaymentMethod([...keys][0])} // Extract selected key
+                      >
+                        {paymentMethods.map((payment) => (
+                          <SelectItem key={payment.id} value={payment.id.toString()} >{payment.name}</SelectItem>
+                        ))}
+                      </Select>
+                    </div>
+                    <div className={`w-1/2 mt-3 input-group`}>
+                      <ThemeInput
+                        customClassName={``}
+                        label={false}
+                        type="number"
+                        id="deposit"
+                        name="deposit"
+                        placeholder="Deposit"
+                        min={1}
+                        value={depositAmount}
+                        onChange={(e) => setDeposit(e.target.value)}
+                      />
+                      {/*{error && <div className="text-red-500 text-sm mt-1">{error}</div>}*/}
+                    </div>
+                  </div>
+                  <div className="border-b-1 border-gray-600"></div>
+                  <div className="flex items-center justify-between mt-3">
+                    <div
+                      className="text-themeSecondary text-sm cursor-pointer"
+                      onClick={() => {
+                        setIsDiscount(!isDiscount);
+                        setDiscountAmount(0);
                       }}
-                      label={false}
-                      aria-label={"Payment Method"}
-                      // placeholder="Payment Method"
-                      selectedKeys={[paymentMethod]} // Auto-select the first item
-                      variant="bordered"
-                      onSelectionChange={(keys) => setPaymentMethod([...keys][0])} // Extract selected key
                     >
-                      {paymentMethods.map((payment) => (
-                        <SelectItem key={payment.id} value={payment.id.toString()} >{payment.name}</SelectItem>
-                      ))}
-                    </Select>
+                      {isDiscount ? <p className="text-danger ml-1">Remove</p> : "Discount"}
+                    </div>
+                    <div className={`${isDiscount ? "visible": "invisible"} text-right text-sm text-warning-500`}>Discount: {Number(discountAmount).toLocaleString()} MMK</div>
                   </div>
-                  <div className={`w-1/2 mt-3 input-group`}>
-                    <ThemeInput
-                      customClassName={``}
-                      label={false}
-                      type="number"
-                      id="deposit"
-                      name="deposit"
-                      placeholder="Deposit"
-                      min={1}
-                      value={depositAmount}
-                      onChange={(e) => setDeposit(e.target.value)}
-                    />
-                    {/*{error && <div className="text-red-500 text-sm mt-1">{error}</div>}*/}
-                  </div>
-                </div>
-                <div className="border-b-1 border-gray-600"></div>
-                <div className="flex items-center justify-between mt-3">
-                  <div
-                    className="text-themeSecondary text-sm cursor-pointer"
-                    onClick={() => {
-                      setIsDiscount(!isDiscount);
-                      setDiscountAmount(0);
-                    }}
-                  >
-                    {isDiscount ? <p className="text-danger ml-1">Remove</p> : "Discount"}
-                  </div>
-                  <div className={`${isDiscount ? "visible": "invisible"} text-right text-sm text-warning-500`}>Discount: {Number(discountAmount).toLocaleString()} MMK</div>
-                </div>
 
-                <div className="flex justify-between items-center">
-                  <div className={`w-1/2 mt-3 input-group ${isDiscount ? "visible": "invisible"} `}>
-                    <ThemeInput
-                      label={false}
-                      type="number"
-                      id="discount"
-                      name="discount"
-                      placeholder="Discount"
-                      min={1}
-                      value={discountAmount}
-                      onChange={(e) => setDiscountAmount(e.target.value)}
-                      // max={stock.quantity}
-                      // onChange={(e) => {}}
-                    />
-                    {/*{error && <div className="text-red-500 text-sm mt-1">{error}</div>}*/}
+                  <div className="flex justify-between items-center">
+                    <div className={`w-1/2 mt-3 input-group ${isDiscount ? "visible": "invisible"} `}>
+                      <ThemeInput
+                        label={false}
+                        type="number"
+                        id="discount"
+                        name="discount"
+                        placeholder="Discount"
+                        min={1}
+                        value={discountAmount}
+                        onChange={(e) => setDiscountAmount(e.target.value)}
+                        // max={stock.quantity}
+                        // onChange={(e) => {}}
+                      />
+                      {/*{error && <div className="text-red-500 text-sm mt-1">{error}</div>}*/}
+                    </div>
+                    <div className="w-1/2 mt-4 text-right">
+                      <span className="text-right text-medium font-bold text-slate-300">Total: { finalTotal.toLocaleString() } MMK</span>
+                    </div>
                   </div>
-                  <div className="w-1/2 mt-4 text-right">
-                    <span className="text-right text-medium font-bold text-slate-300">Total: { finalTotal.toLocaleString() } MMK</span>
-                  </div>
-                </div>
-                <div className="border-b border-b-gray-700 mt-7"></div>
-                <Button
-                  disabled={loading}
-                  size="sm"
-                  type="submit"
-                  className="bg-themeSecondary float-end mt-5 mb-2"
-                  radius="full"
-                >
-                  {loading ? <Spinner size="sm" color="white"/> : "Check Out" }
-                </Button>
+                  <div className="border-b border-b-gray-700 mt-7"></div>
+                  <Button
+                    disabled={loading}
+                    size="sm"
+                    type="submit"
+                    className="bg-themeSecondary float-end mt-5 mb-2"
+                    radius="full"
+                  >
+                    {loading ? <Spinner size="sm" color="white"/> : "Check Out" }
+                  </Button>
+                </form>
               </div>
             }
           </Tab>

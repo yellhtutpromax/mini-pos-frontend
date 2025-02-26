@@ -3,9 +3,9 @@
 import {useEffect, useState} from "react"
 import {Select, SelectItem, Avatar, Chip} from "@heroui/react"
 
-const StockSearch = ({optionItems, isHide= false, selectedItems}) => {
+const StockSearch = ({optionItems, mutantObject, isHide= false, selectedItems}) => {
 
-  const [selectedIds, setSelectedIds] = useState([2,4])
+  const [selectedIds, setSelectedIds] = useState([])
 
   const toArray = (input) => {
     if (typeof input === "string") {
@@ -15,28 +15,33 @@ const StockSearch = ({optionItems, isHide= false, selectedItems}) => {
     return Array.isArray(input) ? input : input ? [input] : [] // Only wrap non-empty input in an array
   }
 
-  const selectIsChanged = (e) => {
-    console.clear()
-    const currentSelected = e.target.value
+  const selectIsChanged = (currentSelected) => {
     const convertedArray = toArray(currentSelected)
     setSelectedIds(convertedArray)
     selectedItems(convertedArray)
-    // console.table(convertedArray)
   }
 
   useEffect(() => {
-    console.clear()
-    selectedItems(selectedIds); // Call with the initial state
-  }, []);
+    if (mutantObject && Array.isArray(mutantObject)) {
+      const newSelectedIds = mutantObject.map(item => item.id).join(',')
+
+      // Only update state if there is an actual change
+      if (newSelectedIds !== selectedIds.join(',')) {
+        // console.log("Updated selection:", newSelectedIds)
+        selectIsChanged(newSelectedIds)
+      }
+    }
+  }, [JSON.stringify(mutantObject)]) // Use JSON.stringify to compare object changes safely
+
 
   return (
     <div className={`${isHide?'hidden':'visible'} w-full md:w-3/4 md:mx-auto`}>
       <Select
         classNames={{
-          base: "w-full",
+          base: "w-full ",
           trigger: "border border-themeBorder",
         }}
-        onChange={selectIsChanged}
+        onChange={(e) => selectIsChanged(e.target.value)}
         isMultiline={true}
         items={optionItems}
         label="Assigned to"
@@ -47,7 +52,10 @@ const StockSearch = ({optionItems, isHide= false, selectedItems}) => {
           return (
             <>
               {items.map((item) => (
-                <Chip className="m-1 bg-background border border-themeBorder" key={item.key.toString()}>{item.data.name}</Chip>
+                <Chip
+                  className={`m-1 bg-background border border-themeBorder chip-id${item.data.id}`}
+                  key={item.key.toString()}>{item.data.name}
+                </Chip>
               ))}
             </>
           )
@@ -71,7 +79,7 @@ const StockSearch = ({optionItems, isHide= false, selectedItems}) => {
               </div>
               <div className="flex flex-col">
                 <span className="text-small">{item.name}</span>
-                <span className="text-tiny text-gray-600">{item.barcode}</span>
+                <span className="text-tiny mt-2 text-gray-600">{item.barcode}</span>
               </div>
             </div>
           </SelectItem>

@@ -66,19 +66,17 @@ const SellStock = ({ isOpen, onOpenChange, stock, setMutantObject, mutantObject,
     }
   }
 
-  // const mutantDelete = () => {
-  //   console.log("Deleting mutant:", stock)
-  //   setMutantObject((prevState) => {
-  //     const updatedState = prevState.filter((obj) => obj.id !== stock.id);
-  //     // Ensure handleSelectedIds uses the updated state
-  //     handleSelectedIds(updatedState.map((obj) => obj.id));
-  //     return updatedState;
-  //   });
-  //   onOpenChange(false)
-  // }
+  const mutantDelete = () => {
+    setMutantObject((prevState) => {
+      const updatedState = prevState.filter((obj) => obj.id !== stock.id);
+      handleSelectedIds(updatedState.map((obj) => obj.id));
+      return updatedState;
+    });
+    onOpenChange(false)
+  }
 
   useEffect(() => {
-    console.clear()
+    // console.clear()
     let currentQuantity = mutantObject.find((obj)=> obj.id === stock.id && mutantObject);
     setQuantity(currentQuantity?.quantity)
   }, [stock])
@@ -142,7 +140,7 @@ const SellStock = ({ isOpen, onOpenChange, stock, setMutantObject, mutantObject,
               </ModalBody>
               <div className="border border-themeBorder my-2"></div>
               <div className="flex justify-end space-x-2 p-3">
-                {/*<Button className="border-danger-900 text-danger" onPress={mutantDelete}>Delete</Button>*/}
+                <Button className="border-danger-900 text-danger" onPress={mutantDelete}>Delete</Button>
                 <Button type="submit" className="bg-themeSecondary text-white">Update</Button>
               </div>
             </form>

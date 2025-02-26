@@ -11,6 +11,7 @@ import {useDisclosure} from "@heroui/modal"
 import {addToast, Select, SelectItem, Tabs, Tab} from "@heroui/react"
 import dynamic from 'next/dynamic'
 import {ThemeInput} from "@/app/components/Form/Input/ThemeInput";
+import PrintSheet from "@/app/components/Sale/PrintSheet";
 
 // Dynamically import the scanner to avoid SSR issues
 const BarcodeScannerComponent = dynamic(
@@ -129,17 +130,16 @@ const Sell = () => {
       paymentMethod: Number(paymentMethod),
     } // payload
     console.clear()
-    console.table(formData)
+    // console.table(formData)
     const response = await saveReceipt(formData)
     if (response.success) {
       setLoading(false)
-      addToast({
-        title: "Saved",
-        description: response.message,
-        color: "success",
-        timeout: 2000
-      })
-      console.log('Sale Receipt saved successfully!')
+      // addToast({
+      //   title: "Saved",
+      //   description: response.message,
+      //   color: "success",
+      //   timeout: 2000
+      // })
       console.log(response)
       // Reset the form state
       setMutantObject([])
@@ -164,6 +164,7 @@ const Sell = () => {
     // Ensure amounts are numbers before summing
     const netAmount = mutantObject.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     setTotalPrice(netAmount)
+    console.clear()
     console.table(mutantObject)
     console.log("Total Amount : ", totalPrice);
     console.log('*******************')
@@ -217,6 +218,7 @@ const Sell = () => {
             <div className="input-group mb-5">
               <StockSearch
                 optionItems={optionItems}
+                mutantObject={mutantObject}
                 selectedItems={handleSelectedIds}
                 isHide={searchInputHidden}
               />
@@ -225,7 +227,7 @@ const Sell = () => {
               <div className="w-full md:w-3/4 md:mx-auto print-box overflow-hidden border border-themeBorder p-2 bg-background rounded-lg shadow-md mb-16">
                 <form action={handleSubmit}>
                   {/* Receipt Header */}
-                  <div className="text-2xl font-semibold text-center text-slate-300">Mesoft Receipt</div>
+                  <div className="text-2xl mt-2 text-center text-slate-300">Mesoft Receipt</div>
                   <div className="border-b-1 border-dashed border-gray-400 my-3 mt-5"></div>
                   {/* Table Header */}
                   <div className="flex items-center justify-between text-slate-100 pb-2">
@@ -352,7 +354,7 @@ const Sell = () => {
               </div>
             }
           >
-            <div>This is checkout page</div>
+            <PrintSheet/>
           </Tab>
         </Tabs>
       </div>

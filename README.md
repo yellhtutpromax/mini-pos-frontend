@@ -43,7 +43,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## 3 Enable it and enter
 ## 4 http://192.1.1.154:4000 ( past the address the you want to access )
 
-
+#npm install instascan react-webcam
 
 receipt
 _______

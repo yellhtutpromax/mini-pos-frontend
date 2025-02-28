@@ -1,20 +1,21 @@
 "use client"
 
 import React, {useEffect, useMemo, useState} from 'react'
+import { BrowserMultiFormatReader } from "@zxing/library"
 import {fetchStockByBarcode, saveReceipt} from "@/app/(admin)/sale/action"
-import {paymentMethods} from "@/app/constants/constants";
+import {paymentMethods} from "@/app/constants/constants"
 import SellStock from "@/app/components/Stock/SellStock"
 import StockSearch from "@/app/components/Sale/StockSearch"
-import {useAuth} from "@/app/lib/authContext";
+import {useAuth} from "@/app/lib/authContext"
 import {Button, Spinner} from "@nextui-org/react"
 import {useDisclosure} from "@heroui/modal"
 import {addToast, Select, SelectItem, Tabs, Tab} from "@heroui/react"
-import {ThemeInput} from "@/app/components/Form/Input/ThemeInput";
-import PrintSheet from "@/app/components/Sale/PrintSheet";
+import {ThemeInput} from "@/app/components/Form/Input/ThemeInput"
+import PrintSheet from "@/app/components/Sale/PrintSheet"
 
 const Sell = () => {
 
-  const { authUser } = useAuth();
+  const { authUser } = useAuth()
   const [optionItems, setOptionItems] = useState([])
   const [searchInputHidden, setSearchInputHidden] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState(paymentMethods[0]?.id.toString())
@@ -95,15 +96,70 @@ const Sell = () => {
 
   useEffect(() => {
     // Ensure amounts are numbers before summing
-    const netAmount = mutantObject.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    const netAmount = mutantObject.reduce((sum, item) => sum + (Number(item.amount) || 0), 0)
     setTotalPrice(netAmount)
     console.clear()
     console.table(mutantObject)
-    console.log("Total Amount : ", totalPrice);
+    console.log("Total Amount : ", totalPrice)
     console.log('*******************')
   }, [mutantObject])
 
-  const finalTotal = useMemo(() => Number(totalPrice) - Number(discountAmount), [totalPrice, discountAmount]);
+  const finalTotal = useMemo(() => Number(totalPrice) - Number(discountAmount), [totalPrice, discountAmount])
+
+  const [barcodeResult, setBarcodeResult] = useState("")
+  const [isDeviceFound, setIsDeviceFound] = useState(false)
+  const [isScanning, setIsScanning] = useState(false)
+
+  const scanTheBarcode = async () => {
+    const codeReader = new BrowserMultiFormatReader()
+    codeReader.reset();
+    setIsScanning(true) // Start scanning
+    try {
+      // List available video devices
+      const videoInputDevices = await codeReader.listVideoInputDevices()
+
+      if (videoInputDevices.length > 0) {
+        setIsDeviceFound(true) // Device found
+        const result = await codeReader.decodeFromInputVideoDevice(undefined, "video")
+          .catch((err) => {
+            console.error("Error decoding barcode:", err);
+            return null;
+          });
+
+        if (result) {
+          setBarcodeResult(result.text);
+          console.log("Scanned barcode:", result);
+        } else {
+          console.log("No barcode detected.");
+        }
+      } else {
+        setIsDeviceFound(false) // No device found
+        setBarcodeResult("No camera device found.")
+        console.log("No camera device found.")
+      }
+    } catch (err) {
+      console.error("Error scanning barcode:", err)
+      setBarcodeResult("Error scanning barcode.")
+      console.log('Error scanning')
+    }
+  }
+
+  const scanStop = () => {
+    const videoElement = document.getElementById("video");
+
+    if (videoElement && videoElement.srcObject) {
+      const stream = videoElement.srcObject;
+      const tracks = stream.getTracks(); // Get all tracks (video & audio)
+
+      tracks.forEach(track => track.stop()); // Stop each track
+      videoElement.srcObject = null; // Remove the video source
+    }
+
+    const codeReader = new BrowserMultiFormatReader()
+    codeReader.reset() // Reset the scanner
+    setIsScanning(false) // Stop scanning
+    setBarcodeResult("") // Reset barcode result
+  }
 
   return (
     <>
@@ -122,10 +178,21 @@ const Sell = () => {
             {searchInputHidden ? "Show" : "Hide"}
           </div>
         </div>
-        <Button className="bg-transparent border border-themeBorder" onPress={() => {
-        }}>
-          <div className="text-left text-themeSecondary text-base font-semibold">Scan</div>
+        <Button className="bg-transparent border border-themeBorder" onPress={!isScanning ? scanTheBarcode : scanStop}>
+          <div className="text-left text-themeSecondary text-base font-semibold"> {!isScanning ? "Scan" : "Stop"}</div>
         </Button>
+      </div>
+      <div className={`${!isScanning? 'hidden':'visible'} flex flex-col items-center justify-between mt-6`}>
+        <div>
+          <video id="video" className="w-screen h-1/3 object-cover rounded-2xl" />
+        </div>
+        <div>
+          {isDeviceFound ? (
+            <div className="mt-3 text-gray-500">Barcode : {barcodeResult || " Scanning..."}</div>
+          ) : (
+            <div>Not Found: {barcodeResult}</div>
+          )}
+        </div>
       </div>
       <div className="flex w-full flex-col">
         <Tabs
@@ -235,8 +302,8 @@ const Sell = () => {
                     <div
                       className="text-themeSecondary text-sm cursor-pointer"
                       onClick={() => {
-                        setIsDiscount(!isDiscount);
-                        setDiscountAmount(0);
+                        setIsDiscount(!isDiscount)
+                        setDiscountAmount(0)
                       }}
                     >
                       {isDiscount ? <p className="text-danger ml-1">Remove</p> : "Discount"}

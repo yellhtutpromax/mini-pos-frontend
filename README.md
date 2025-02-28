@@ -44,17 +44,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## 4 http://192.1.1.154:4000 ( past the address the you want to access )
 
 #npm install instascan react-webcam
-
-receipt
-_______
-
-id
-receipt_code
-sale_ids
-user_id
-discount
-total_amount
-payment_method
-notes
-created_at
-updated_at
+#npm install @zxing/library react-webcam

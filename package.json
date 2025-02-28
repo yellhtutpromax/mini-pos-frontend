@@ -21,6 +21,7 @@
     "@nextui-org/react": "^2.4.8",
     "@nextui-org/system": "^2.4.5",
     "@nextui-org/table": "^2.2.8",
+    "@zxing/library": "^0.21.3",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "dayjs": "^1.11.13",

@@ -227,7 +227,7 @@ const Sell = () => {
               <div className="w-full md:w-3/4 md:mx-auto print-box overflow-hidden border border-themeBorder p-2 bg-background rounded-lg shadow-md mb-16">
                 <form action={handleSubmit}>
                   {/* Receipt Header */}
-                  <div className="text-2xl mt-2 text-center text-slate-300">Mesoft Receipt</div>
+                  <div className="text-2xl mt-2 text-center text-slate-300">Receipt</div>
                   <div className="border-b-1 border-dashed border-gray-400 my-3 mt-5"></div>
                   {/* Table Header */}
                   <div className="flex items-center justify-between text-slate-100 pb-2">

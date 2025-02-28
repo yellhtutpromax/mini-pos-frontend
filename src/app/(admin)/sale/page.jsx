@@ -9,24 +9,13 @@ import {useAuth} from "@/app/lib/authContext";
 import {Button, Spinner} from "@nextui-org/react"
 import {useDisclosure} from "@heroui/modal"
 import {addToast, Select, SelectItem, Tabs, Tab} from "@heroui/react"
-import dynamic from 'next/dynamic'
 import {ThemeInput} from "@/app/components/Form/Input/ThemeInput";
 import PrintSheet from "@/app/components/Sale/PrintSheet";
-
-// Dynamically import the scanner to avoid SSR issues
-const BarcodeScannerComponent = dynamic(
-  () => import('react-qr-barcode-scanner'),
-  { ssr: false }
-)
 
 const Sell = () => {
 
   const { authUser } = useAuth();
   const [optionItems, setOptionItems] = useState([])
-  const [scannedData, setScannedData] = useState(null)
-  const [isScanning, setIsScanning] = useState(false)
-  const [product, setProduct] = useState(null)
-  const [cameraError, setCameraError] = useState(null)
   const [searchInputHidden, setSearchInputHidden] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState(paymentMethods[0]?.id.toString())
   const [totalPrice, setTotalPrice] = useState(0)
@@ -39,62 +28,6 @@ const Sell = () => {
   const [loading, setLoading] = useState(false)
 
   const {isOpen: isSellModalOpen, onOpen: onSellModalOpen, onOpenChange: onSellModalOpenChange} = useDisclosure()
-
-  // const getStockByBarcode = async (barcode='210803416064341') => {
-  //   const response = await fetchStockByBarcode(barcode)
-  //   console.log(response)
-  //   if (response.success) {
-  //     setProduct(response.data)
-  //     // setScannedData(result.text)
-  //     // setIsScanning(false)
-  //     // fetchProductData(result.text)
-  //   }
-  // }
-  //
-  // const handleScan = async (result) => {
-  //   console.log(result)
-  //   if (result) {
-  //     setScannedData(result.text)
-  //     setIsScanning(false)
-  //
-  //     // Fetch product information from the API
-  //     const response = await fetchStockByBarcode('210803416064341')
-  //     const productData = await response.json()
-  //     setProduct(productData)
-  //   }
-  // }
-  //
-  // const handleError = async (err) => {
-  //   const response = await fetchStockByBarcode('210803416064341')
-  //   setProduct(response.data)
-  //   // console.log(err)
-  //   // if (err.name === 'NotFoundError') {
-  //   //   setCameraError('No camera found. Please ensure your device has a camera and it is accessible.')
-  //   // } else {
-  //   //   setCameraError('Error accessing camera. Please grant permission and try again.')
-  //   // }
-  // }
-  //
-  // // Function to handle quantity change
-  // const handleQuantityChange = (itemId, value) => {
-  //   // Ensure the value is a non-negative number
-  //   const newQuantity = Math.max(0, Number(value))
-  //   setQuantities((prevQuantities) => ({
-  //     ...prevQuantities,
-  //     [itemId]: newQuantity,
-  //   }))
-  // }
-  //
-  // // Calculate the total amount
-  // const calculateTotal = () => {
-  //   return optionItems.reduce((total, item) => {
-  //     if (selectedIds.includes(item.id)) {
-  //       const qty = quantities[item.id] || 0
-  //       return total + qty * Number(item.sell_amount)
-  //     }
-  //     return total
-  //   }, 0)
-  // }
 
   const [mutantObject, setMutantObject] = useState([])
   const handleSelectedIds = (selectedIds) => {
@@ -359,28 +292,6 @@ const Sell = () => {
         </Tabs>
       </div>
 
-      {/*<button onClick={() => setIsScanning(!isScanning)}>*/}
-      {/*  {isScanning ? 'Stop Scanning' : 'Start Scanning'}*/}
-      {/*</button>*/}
-
-      {/*{isScanning && (*/}
-      {/*  <BarcodeScannerComponent*/}
-      {/*    width={500}*/}
-      {/*    height={500}*/}
-      {/*    onUpdate={handleScan}*/}
-      {/*    onError={handleError}*/}
-      {/*  />*/}
-      {/*)}*/}
-      {/*{scannedData && <p>Scanned Barcode: {scannedData}</p>}*/}
-      {/*{cameraError && <p>{cameraError}</p>}*/}
-      {/*{product && (*/}
-      {/*  <div>*/}
-      {/*    <h3>Product Information</h3>*/}
-      {/*    <p>Name: {product.name}</p>*/}
-      {/*    /!*<p>Price: {product.price}</p>*!/*/}
-      {/*    /!*<p>Stock: {product.stock}</p>*!/*/}
-      {/*  </div>*/}
-      {/*)}*/}
       {/* SellStock Modal */}
       <SellStock
         isOpen={isSellModalOpen}

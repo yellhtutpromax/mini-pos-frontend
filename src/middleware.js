@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, userAgent } from 'next/server';
 import { decrypt, refreshAccessToken, deleteSession } from '@/app/lib/session';
 import { cookies } from 'next/headers';
 
@@ -8,9 +8,11 @@ const publicRoutes = ['/auth/login', '/signup', '/'];
 
 export default async function middleware(req) {
   const path = req.nextUrl.pathname;
+  const { device } = userAgent(request)
   const cookieStore = await cookies();
   const accessToken = cookieStore.get('access_token')?.value;
   const refreshToken = cookieStore.get('refresh_token')?.value;
+  const viewport = device.type === 'mobile' ? 'mobile' : 'desktop'
 
   const isProtectedRoute = protectedRoutes.includes(path);
   const isPublicRoute = publicRoutes.includes(path);

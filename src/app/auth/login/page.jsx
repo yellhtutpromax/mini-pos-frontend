@@ -41,7 +41,7 @@ const Login = () => {
     const result = await login(credentials)
     console.log(result)
     if (result.status === 200){
-      setAuthUser(result.user) // user data
+      setAuthUser(result.data) // user data
       setUsernameError('')
       setPasswordError('')
       setLoading(false)

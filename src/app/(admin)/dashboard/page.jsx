@@ -15,6 +15,7 @@ const Dashboard = () => {
       }
     }
     fetchProfile()
+    console.log('dashboard')
   }, [])
 
   const cards = [

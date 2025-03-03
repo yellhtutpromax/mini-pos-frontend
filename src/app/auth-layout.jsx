@@ -8,6 +8,8 @@ import {Sidebar} from "@/app/components/General/Sidebar";
 
 const AuthenticatedLayout = ({ children }) => {
   const { authUser, loading } = useAuth();
+  console.log('AuthenticatedLayout - authUser:', authUser);
+  console.log('AuthenticatedLayout - loading:', loading);
 
   const layout = useMemo(() => {
     if (loading) return <Loading />;

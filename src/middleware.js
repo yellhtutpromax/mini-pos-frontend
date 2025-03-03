@@ -8,7 +8,7 @@ const publicRoutes = ['/auth/login', '/signup', '/'];
 
 export default async function middleware(req) {
   const path = req.nextUrl.pathname;
-  const { device } = userAgent(request)
+  const { device } = userAgent(req)
   const cookieStore = await cookies();
   const accessToken = cookieStore.get('access_token')?.value;
   const refreshToken = cookieStore.get('refresh_token')?.value;

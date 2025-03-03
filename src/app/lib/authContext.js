@@ -7,20 +7,38 @@ const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false)
-  const [isDecrypt, setIsDecrypt] = useState(true)
   const [authUser, setAuthUser] = useState(null)
 
   useEffect(() => {
-    const fetchUser =  async (req, res, next) => {
-      setLoading(true)
-      const userInfo = await getUserInfo()
-      setLoading(false)
-      setAuthUser(userInfo)
-    }
-    if(isDecrypt)fetchUser()
+    let isMounted = true; // Track if the component is still mounted
+
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const userInfo = await getUserInfo();
+        if (isMounted) {
+          setAuthUser(userInfo); // Set the authenticated user
+        }
+      } catch (error) {
+        console.error('Failed to fetch user info:', error);
+        if (isMounted) {
+          setAuthUser(null); // Ensure authUser is null if there's an error
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false); // Set loading to false after the operation
+        }
+      }
+    };
+
+    fetchUser();
+
+    return () => {
+      isMounted = false; // Cleanup function to prevent state updates after unmount
+    };
   }, []);
   return (
-    <AuthContext.Provider value={{ authUser, setAuthUser, loading, isDecrypt }}>
+    <AuthContext.Provider value={{ authUser, setAuthUser, loading }}>
       {children}
     </AuthContext.Provider>
   )

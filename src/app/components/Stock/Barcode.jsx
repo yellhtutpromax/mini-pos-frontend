@@ -8,10 +8,11 @@ const BarcodeGenerator = ({renderId, stock, isPrintModalOpen, onPrintModalOpenCh
   const barcodeRef = useRef(null);
   const [barcodeWidth, setBarcodeWidth] = useState(288);
   const printableRef = useRef(null); // Ref for the printable area
-  const [quantity, setQuantity] = useState(0); // State for quantity
+  const [quantity, setQuantity] = useState(1); // State for quantity
 
   useEffect(() => {
-    console.log('Generate barcode '+ renderId )
+    if(isNaN(renderId)) return
+    // console.log('Generate barcode '+ renderId )
     if (barcodeRef.current) {
       JsBarcode(barcodeRef.current, stock.barcode, {
         format: "CODE128",
@@ -30,7 +31,7 @@ const BarcodeGenerator = ({renderId, stock, isPrintModalOpen, onPrintModalOpenCh
       //   barcodeRef.current.style.transformOrigin = "left"; // Scale from left
       // }
     }
-  }, [renderId]);
+  }, [renderId,stock]);
 
   const handlePrint = () => {
     const printWindow = window.open("", "_blank");

@@ -9,6 +9,7 @@ import Barcode from "@/app/components/Stock/Barcode"
 import JsBarcode from "jsbarcode";
 import {useAuth} from "@/app/lib/authContext";
 import dayjs from "dayjs";
+import {Loading} from "@/app/components/Loading";
 
 const Inventory = () => {
 
@@ -76,11 +77,15 @@ const Inventory = () => {
         setFetchLoading(false) // fetch stock data loading
         setTotalStock(data.data.length)
         setStocks(data.data) // Set the fetched stock data in state
-      // },2000)
+      // },5000)
     } catch (error) {
       console.error("Error fetching stock data:", error)
     }
   }
+
+  useEffect(() => {
+    console.log(fetchLoading)
+  }, [fetchLoading]);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -193,15 +198,18 @@ const Inventory = () => {
       <div className="load-card-ui">
         <div className="mt-4" style={{overflowY: 'scroll', maxHeight: '700px', scrollbarWidth: 'none'}}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredStocks.map((stock) => (
-              <StockBlock
-                key={stock.id}
-                stock={stock}
-                onEdit={handleEdit}
-                onPrint={handlePrint}
-                fetchLoading={fetchLoading}
-              />
-            ))}
+            {fetchLoading ? (
+              <Loading/>
+            ) : (
+              filteredStocks.map((stock) => (
+                <StockBlock
+                  key={stock.id}
+                  stock={stock}
+                  onEdit={handleEdit}
+                  onPrint={handlePrint}
+                />
+              ))
+            )}
           </div>
         </div>
         <Modal className="bg-background rounded" isOpen={isOpen} scrollBehavior={"inside"} onOpenChange={onOpenChange}>

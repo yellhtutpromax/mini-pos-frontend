@@ -148,7 +148,13 @@ const Sell = () => {
       }
     } catch (err) {
       console.error("Error scanning barcode:", err);
-      setBarcodeResult("Error scanning barcode.");
+
+      // Check if the error is due to denied camera access
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        setBarcodeResult("Camera access is required for scanning. Please allow camera access.");
+      } else {
+        setBarcodeResult("Error scanning barcode.");
+      }
     }
   };
 
@@ -201,7 +207,7 @@ const Sell = () => {
         </div>
         <div>
           {isDeviceFound ? (
-            <div className="mt-3 text-gray-500">Barcode : {barcodeResult || " Scanning..."}</div>
+            <div className="mt-3 text-gray-500">Result : {barcodeResult || " Scanning..."}</div>
           ) : (
             <div>Not Found: {barcodeResult}</div>
           )}

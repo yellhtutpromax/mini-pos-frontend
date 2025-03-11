@@ -109,65 +109,64 @@ const Sell = () => {
   const [barcodeResult, setBarcodeResult] = useState("")
   const [isDeviceFound, setIsDeviceFound] = useState(false)
   const [isScanning, setIsScanning] = useState(false)
+  const codeReaderRef = useRef(null); // Ref to store the codeReader instance
+  const videoRef = useRef(null); // Ref to access the video element
 
-  const debounce = (func, wait) => {
-    let timeout;
-    return function(...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-  };
+  const scanTheBarcode = async () => {
+    const codeReader = new BrowserMultiFormatReader();
+    codeReaderRef.current = codeReader; // Store the instance in a ref
+    setIsScanning(true); // Start scanning
+    setIsDeviceFound(false); // Reset device found state
+    setBarcodeResult(""); // Reset barcode result
 
-  const scanTheBarcode = debounce(async () => {
-    const codeReader = new BrowserMultiFormatReader()
-    codeReader.reset();
-    setIsScanning(true) // Start scanning
     try {
       // List available video devices
-      const videoInputDevices = await codeReader.listVideoInputDevices()
+      const videoInputDevices = await codeReader.listVideoInputDevices();
 
       if (videoInputDevices.length > 0) {
-        setIsDeviceFound(true) // Device found
-        const result = await codeReader.decodeFromInputVideoDevice(undefined, "video")
-          .catch((err) => {
-            console.error("Error decoding barcode:", err);
-            return null;
-          });
+        setIsDeviceFound(true); // Device found
 
-        if (result) {
-          setBarcodeResult(result.text);
-          console.log("Scanned barcode:", result);
-        } else {
-          console.log("No barcode detected.");
-        }
+        // Start decoding from the video device
+        const result = await codeReader.decodeFromVideoDevice(
+          undefined, // Use the default camera
+          videoRef.current, // Pass the video element ref
+          (result, error) => {
+            if (result) {
+              setBarcodeResult(result.getText()); // Set the barcode result
+              console.log("Scanned barcode:", result.getText());
+              scanStop(); // Stop scanning after successful scan
+            }
+            if (error && !(error instanceof ZXing.NotFoundException)) {
+              console.error("Error decoding barcode:", error);
+            }
+          }
+        );
       } else {
-        setIsDeviceFound(false) // No device found
-        setBarcodeResult("No camera device found.")
-        console.log("No camera device found.")
+        setIsDeviceFound(false); // No device found
+        setBarcodeResult("No camera device found.");
+        console.log("No camera device found.");
       }
     } catch (err) {
-      console.error("Error scanning barcode:", err)
-      setBarcodeResult("Error scanning barcode.")
-      console.log('Error scanning')
+      console.error("Error scanning barcode:", err);
+      setBarcodeResult("Error scanning barcode.");
     }
-  }, 300) // Adjust the debounce time as needed
+  };
 
   const scanStop = () => {
-    const videoElement = document.getElementById("video");
+    if (codeReaderRef.current) {
+      codeReaderRef.current.reset(); // Reset the scanner
+    }
 
+    const videoElement = videoRef.current;
     if (videoElement && videoElement.srcObject) {
       const stream = videoElement.srcObject;
       const tracks = stream.getTracks(); // Get all tracks (video & audio)
-
       tracks.forEach(track => track.stop()); // Stop each track
       videoElement.srcObject = null; // Remove the video source
     }
 
-    const codeReader = new BrowserMultiFormatReader()
-    codeReader.reset() // Reset the scanner
-    setIsScanning(false) // Stop scanning
-    setBarcodeResult("") // Reset barcode result
-  }
+    setIsScanning(false); // Stop scanning
+  };
 
   return (
     <>
@@ -192,7 +191,13 @@ const Sell = () => {
       </div>
       <div className={`${!isScanning? 'hidden':'visible'} flex flex-col items-center justify-between mt-6`}>
         <div>
-          <video id="video" className="w-screen h-1/3 object-cover rounded-2xl" />
+          <video
+            id="video"
+            ref={videoRef}
+            className="w-screen h-1/3 object-cover rounded-2xl"
+            autoPlay
+            playsInline
+          />
         </div>
         <div>
           {isDeviceFound ? (

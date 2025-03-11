@@ -8,6 +8,7 @@ import StockBlock from "@/app/components/Stock/StockBlock"
 import Barcode from "@/app/components/Stock/Barcode"
 import JsBarcode from "jsbarcode";
 import {useAuth} from "@/app/lib/authContext";
+import dayjs from "dayjs";
 
 const Inventory = () => {
 
@@ -306,6 +307,7 @@ const Inventory = () => {
         </Modal>
         {/* Barcode Modal */}
         <Barcode
+          renderId={dayjs().unix()+selectedStock?.id}
           stock={selectedStock}
           isPrintModalOpen={isPrintModalOpen}
           onPrintModalOpenChange={onPrintModalOpenChange}

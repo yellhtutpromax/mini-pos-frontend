@@ -4,13 +4,14 @@ import {Button} from "@nextui-org/react";
 import {Modal, ModalBody, ModalContent} from "@heroui/modal";
 import {ThemeInput} from "@/app/components/Form/Input/ThemeInput";
 
-const BarcodeGenerator = ({ stock, isPrintModalOpen, onPrintModalOpenChange }) => {
+const BarcodeGenerator = ({renderId, stock, isPrintModalOpen, onPrintModalOpenChange }) => {
   const barcodeRef = useRef(null);
   const [barcodeWidth, setBarcodeWidth] = useState(288);
   const printableRef = useRef(null); // Ref for the printable area
   const [quantity, setQuantity] = useState(0); // State for quantity
 
   useEffect(() => {
+    console.log('Generate barcode '+ renderId )
     if (barcodeRef.current) {
       JsBarcode(barcodeRef.current, stock.barcode, {
         format: "CODE128",
@@ -29,7 +30,7 @@ const BarcodeGenerator = ({ stock, isPrintModalOpen, onPrintModalOpenChange }) =
       //   barcodeRef.current.style.transformOrigin = "left"; // Scale from left
       // }
     }
-  }, [stock]);
+  }, [renderId]);
 
   const handlePrint = () => {
     const printWindow = window.open("", "_blank");

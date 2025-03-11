@@ -110,7 +110,15 @@ const Sell = () => {
   const [isDeviceFound, setIsDeviceFound] = useState(false)
   const [isScanning, setIsScanning] = useState(false)
 
-  const scanTheBarcode = async () => {
+  const debounce = (func, wait) => {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  };
+
+  const scanTheBarcode = debounce(async () => {
     const codeReader = new BrowserMultiFormatReader()
     codeReader.reset();
     setIsScanning(true) // Start scanning
@@ -142,7 +150,7 @@ const Sell = () => {
       setBarcodeResult("Error scanning barcode.")
       console.log('Error scanning')
     }
-  }
+  }, 300) // Adjust the debounce time as needed
 
   const scanStop = () => {
     const videoElement = document.getElementById("video");

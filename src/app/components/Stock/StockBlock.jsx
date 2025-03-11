@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
-const StockBlock = ({stock, onEdit, onSell, fetchLoading}) => {
+const StockBlock = ({stock, onEdit, onPrint, fetchLoading}) => {
   return (
     <>
       {!fetchLoading ? (
@@ -25,12 +25,12 @@ const StockBlock = ({stock, onEdit, onSell, fetchLoading}) => {
               </div>
             </div>
             <div>
-              {/*<Button*/}
-              {/*  className="bg-transparent border border-danger-300"*/}
-              {/*  onPress={() => onSell(stock)}*/}
-              {/*>*/}
-              {/*  <div className="text-left text-danger text-base font-semibold">Sell</div>*/}
-              {/*</Button>*/}
+              <Button
+                className="bg-transparent border border-danger-300"
+                onPress={() => onPrint(stock)}
+              >
+                <div className="text-left text-danger text-base font-semibold">Barcode</div>
+              </Button>
             </div>
           </div>
           <div className="border border-themeBorder my-2"></div>

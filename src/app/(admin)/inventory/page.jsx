@@ -1,14 +1,17 @@
 'use client'
-import {useEffect, useState} from "react"
+import {useEffect, useState, useRef} from "react"
 import {Button, Divider, Spinner} from "@nextui-org/react"
 import {Modal, ModalContent, ModalBody, useDisclosure} from "@heroui/modal"
 import {ThemeInput} from "@/app/components/Form/Input/ThemeInput"
 import {fetchStocksData, saveFormData, editFormData} from "@/app/(admin)/inventory/action"
 import StockBlock from "@/app/components/Stock/StockBlock"
-// import SellStock from "@/app/components/Stock/SellStock"
+import Barcode from "@/app/components/Stock/Barcode"
+import JsBarcode from "jsbarcode";
 import {useAuth} from "@/app/lib/authContext";
 
 const Inventory = () => {
+
+  const barcodeRef = useRef(null);
   const { authUser } = useAuth();
   // State for form inputs
   const [formData, setFormData] = useState({
@@ -61,7 +64,7 @@ const Inventory = () => {
 
   // State for SellStock modal
   const {isOpen, onOpen, onOpenChange} = useDisclosure()
-  const {isOpen: isSellModalOpen, onOpen: onSellModalOpen, onOpenChange: onSellModalOpenChange} = useDisclosure()
+  const {isOpen: isPrintModalOpen, onOpen: onPrintModalOpen, onOpenChange: onPrintModalOpenChange} = useDisclosure()
   const [selectedStock, setSelectedStock] = useState(null)
 
   // Fetch stock data on component mount
@@ -152,9 +155,9 @@ const Inventory = () => {
   }
 
   // Handle selling a stock item
-  const handleSell = (stock) => {
+  const handlePrint = (stock) => {
     setSelectedStock(stock) // Set the selected stock
-    onSellModalOpen() // Open the SellStock modal
+    onPrintModalOpen() // Open the SellStock modal
   }
 
   return (
@@ -194,7 +197,7 @@ const Inventory = () => {
                 key={stock.id}
                 stock={stock}
                 onEdit={handleEdit}
-                // onSell={handleSell}
+                onPrint={handlePrint}
                 fetchLoading={fetchLoading}
               />
             ))}
@@ -301,8 +304,12 @@ const Inventory = () => {
             )}
           </ModalContent>
         </Modal>
-        {/* SellStock Modal */}
-        {/*<SellStock isOpen={isSellModalOpen} onOpenChange={onSellModalOpenChange} stock={selectedStock}/>*/}
+        {/* Barcode Modal */}
+        <Barcode
+          stock={selectedStock}
+          isPrintModalOpen={isPrintModalOpen}
+          onPrintModalOpenChange={onPrintModalOpenChange}
+        />
       </div>
     </>
   )

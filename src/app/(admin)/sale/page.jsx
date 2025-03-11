@@ -2,7 +2,6 @@
 
 import React, {useEffect, useMemo, useRef, useState} from 'react'
 import { BrowserMultiFormatReader } from "@zxing/library"
-import BarcodeScannerComponent from "react-qr-barcode-scanner";
 import {fetchStockByBarcode, saveReceipt} from "@/app/(admin)/sale/action"
 import {paymentMethods} from "@/app/constants/constants"
 import SellStock from "@/app/components/Stock/SellStock"
@@ -110,41 +109,57 @@ const Sell = () => {
   const [barcodeResult, setBarcodeResult] = useState("")
   const [isDeviceFound, setIsDeviceFound] = useState(false)
   const [isScanning, setIsScanning] = useState(false)
-  const videoElement = useRef(null);
 
   const scanTheBarcode = async () => {
+    const codeReader = new BrowserMultiFormatReader()
+    codeReader.reset();
+    setIsScanning(true) // Start scanning
     try {
-      const videoInputDevices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = videoInputDevices.filter(device => device.kind === "videoinput");
+      // List available video devices
+      const videoInputDevices = await codeReader.listVideoInputDevices()
 
-      if (videoDevices.length > 0) {
-        setIsDeviceFound(true);
+      if (videoInputDevices.length > 0) {
+        setIsDeviceFound(true) // Device found
+        const result = await codeReader.decodeFromInputVideoDevice(undefined, "video")
+          .catch((err) => {
+            console.error("Error decoding barcode:", err);
+            return null;
+          });
+
+        if (result) {
+          setBarcodeResult(result.text);
+          console.log("Scanned barcode:", result);
+        } else {
+          console.log("No barcode detected.");
+        }
       } else {
-        setIsDeviceFound(false);
-        setBarcodeResult("No camera device found.");
+        setIsDeviceFound(false) // No device found
+        setBarcodeResult("No camera device found.")
+        console.log("No camera device found.")
       }
     } catch (err) {
-      console.error("Error detecting devices:", err);
-      setIsDeviceFound(false);
-      setBarcodeResult("Error detecting devices.");
+      console.error("Error scanning barcode:", err)
+      setBarcodeResult("Error scanning barcode.")
+      console.log('Error scanning')
     }
   }
 
   const scanStop = () => {
-    setIsScanning(false);
-    setBarcodeResult("");
-  }
+    const videoElement = document.getElementById("video");
 
-  const handleScan = (data) => {
-    if (data) {
-      setBarcodeResult(data.text);
+    if (videoElement && videoElement.srcObject) {
+      const stream = videoElement.srcObject;
+      const tracks = stream.getTracks(); // Get all tracks (video & audio)
+
+      tracks.forEach(track => track.stop()); // Stop each track
+      videoElement.srcObject = null; // Remove the video source
     }
-  };
 
-  const handleError = (err) => {
-    console.error("Error scanning:", err);
-    setBarcodeResult("Error scanning barcode.");
-  };
+    const codeReader = new BrowserMultiFormatReader()
+    codeReader.reset() // Reset the scanner
+    setIsScanning(false) // Stop scanning
+    setBarcodeResult("") // Reset barcode result
+  }
 
   return (
     <>
@@ -169,43 +184,13 @@ const Sell = () => {
       </div>
       <div className={`${!isScanning? 'hidden':'visible'} flex flex-col items-center justify-between mt-6`}>
         <div>
-          {/* Start or stop the scanner based on the scanning state */}
-          {isScanning && isDeviceFound ? (
-            <div>
-              <BarcodeScannerComponent
-                width={500}
-                height={400}
-                onUpdate={(err, result) => {
-                  if (result) handleScan(result);
-                  else handleError(err);
-                }}
-              />
-            </div>
-          ) : (
-            <div className="text-gray-500">Scanning is stopped.</div>
-          )}
+          <video id="video" className="w-screen h-1/3 object-cover rounded-2xl" />
         </div>
         <div>
-          <video
-            ref={videoElement}
-            id="video"
-            className="w-screen h-1/3 object-cover rounded-2xl"
-            autoPlay
-            muted
-            playsInline
-          />
-          {/*<video id="video" className="w-screen h-1/3 object-cover rounded-2xl" />*/}
-        </div>
-        {/* Barcode result */}
-        <div className="mt-3 text-gray-500">
           {isDeviceFound ? (
-            barcodeResult ? (
-              <div>Barcode: {barcodeResult}</div>
-            ) : (
-              <div>Scanning...</div>
-            )
+            <div className="mt-3 text-gray-500">Barcode : {barcodeResult || " Scanning..."}</div>
           ) : (
-            <div>No camera device found</div>
+            <div>Not Found: {barcodeResult}</div>
           )}
         </div>
       </div>
@@ -373,7 +358,6 @@ const Sell = () => {
           </Tab>
         </Tabs>
       </div>
-
       {/* SellStock Modal */}
       <SellStock
         isOpen={isSellModalOpen}

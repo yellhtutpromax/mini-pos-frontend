@@ -31,7 +31,7 @@ const fetchStockByBarcode = async () => {
 const saveReceipt = async (formData) => {
   try {
     // Extract data from formData
-    const { mutantObject, selectedIds, depositAmount, discountAmount, totalPrice, paymentMethod, userId } = formData;
+    const { mutantObject, selectedIds, depositAmount, discountAmount, totalPrice, paymentMethod, userId, notes } = formData;
 
     const saleIds = [];
 
@@ -52,7 +52,7 @@ const saveReceipt = async (formData) => {
         sale.amount * sale.quantity, // total_amount
         sale.quantity, // quantity
         new Date().toISOString().split('T')[0], // sell_date (today's date)
-        '', // notes (optional)
+        '', // notes (optional) note for specific sale item
       ]);
 
       // Store the newly inserted sale ID
@@ -75,7 +75,7 @@ const saveReceipt = async (formData) => {
       discountAmount,
       totalPrice,
       totalPrice - discountAmount,
-      '', // Add notes if needed
+      notes, // Add notes if needed
       new Date().toISOString().split('T')[0],
     ]);
     return {

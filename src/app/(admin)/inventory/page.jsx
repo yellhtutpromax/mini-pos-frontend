@@ -83,10 +83,6 @@ const Inventory = () => {
     }
   }
 
-  useEffect(() => {
-    console.log(fetchLoading)
-  }, [fetchLoading]);
-
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()

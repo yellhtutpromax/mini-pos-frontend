@@ -11,7 +11,8 @@ import {Button, Spinner} from "@nextui-org/react"
 import {useDisclosure} from "@heroui/modal"
 import {addToast, Select, SelectItem, Tabs, Tab} from "@heroui/react"
 import {ThemeInput} from "@/app/components/Form/Input/ThemeInput"
-import PrintSheet from "@/app/components/Sale/PrintSheet"
+import Receipt from "@/app/components/Sale/Receipt"
+import {Textarea} from "@nextui-org/input";
 
 const Sell = () => {
 
@@ -25,6 +26,9 @@ const Sell = () => {
   const [depositAmount, setDeposit] = useState(0)
   const [selectedIds, setSelectedIds] = useState([])
   const [selectedStock, setSelectedStock] = useState(null)
+
+  const [showNotes, setShowNotes] = useState(false)
+  const [notes, setNotes] = useState('')  // Add state for notes
   // const [quantities, setQuantities] = useState({})
   const [loading, setLoading] = useState(false)
 
@@ -62,6 +66,7 @@ const Sell = () => {
       discountAmount: Number(discountAmount),
       totalPrice,
       paymentMethod: Number(paymentMethod),
+      notes
     } // payload
     console.clear()
     // console.table(formData)
@@ -147,13 +152,13 @@ const Sell = () => {
         console.log("No camera device found.");
       }
     } catch (err) {
-      console.error("Error scanning barcode:", err);
+      console.log("Error scanning barcode:", err);
 
       // Check if the error is due to denied camera access
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
         setBarcodeResult("Camera access is required for scanning. Please allow camera access.");
       } else {
-        setBarcodeResult("Error scanning barcode.");
+        setBarcodeResult("Error scanning barcode");
       }
     }
   };
@@ -350,6 +355,20 @@ const Sell = () => {
                       <span className="text-right text-medium font-bold text-slate-300">Total: { finalTotal.toLocaleString() } MMK</span>
                     </div>
                   </div>
+                  <div className="border-b border-b-gray-700 mt-3"></div>
+                  <div onClick={() => setShowNotes(!showNotes)} className="text-themeSecondary mt-3 text-sm">Add Notes {showNotes}</div>
+                  <div className={`input-group my-1 ${showNotes ? '' : 'hidden'}`}>
+                    <Textarea
+                      name="notes"
+                      isClearable
+                      className="w-full border-none"
+                      value={notes}  // Bind notes state
+                      placeholder="Notes"
+                      variant="bordered"
+                      onClear={() => console.log("textarea cleared")}
+                      onChange={(e) => setNotes(e.target.value)}  // Update notes state
+                    />
+                  </div>
                   <div className="border-b border-b-gray-700 mt-7"></div>
                   <Button
                     disabled={loading}
@@ -365,15 +384,15 @@ const Sell = () => {
             }
           </Tab>
           <Tab
-            key="print"
+            key="receipt"
             title={
               <div className="flex items-center space-x-2">
-                <span>Print</span>
+                <span>Receipt</span>
                 {/*<Chip size="sm" variant="faded">1</Chip>*/}
               </div>
             }
           >
-            <PrintSheet/>
+            <Receipt/>
           </Tab>
         </Tabs>
       </div>

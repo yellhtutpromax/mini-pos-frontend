@@ -64,6 +64,7 @@ const Receipt = () => {
           },
         }}
         className="w-full"
+        aria-label="Search between date"  // ✅ Add this to prevent undefined error
         label="Search between date"
         variant="bordered"
       />

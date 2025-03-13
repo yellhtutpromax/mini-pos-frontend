@@ -42,9 +42,6 @@ const Receipt = () => {
     <>
       {/*<form action="">*/}
       {/*  <DateRangePicker*/}
-      {/*    // aria-label="Select date range"*/}
-      {/*    // aria-labelledby="Select date range"  // ✅ Ensure this is added directly here*/}
-      {/*    label="Search between date"*/}
       {/*    className="w-full"*/}
       {/*    variant="bordered"*/}
       {/*    calendarProps={{*/}

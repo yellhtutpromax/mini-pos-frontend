@@ -11,9 +11,8 @@
   "dependencies": {
     "@heroui/alert": "^2.2.10",
     "@heroui/autocomplete": "^2.3.11",
-    "@heroui/date-picker": "^2.3.16",
     "@heroui/modal": "^2.2.8",
-    "@heroui/react": "^2.7.2",
+    "@heroui/react": "^2.7.5",
     "@nextui-org/alert": "^2.2.8",
     "@nextui-org/button": "^2.2.8",
     "@nextui-org/card": "^2.2.8",

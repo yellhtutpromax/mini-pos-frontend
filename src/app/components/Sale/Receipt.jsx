@@ -40,34 +40,37 @@ const Receipt = () => {
 
   return (
     <>
-      <DateRangePicker
-        calendarProps={{
-          classNames: {
-            base: "bg-background",
-            headerWrapper: "pt-4 bg-background",
-            prevButton: "border-1 border-default-200 rounded-small",
-            nextButton: "border-1 border-default-200 rounded-small",
-            gridHeader: "bg-background shadow-none border-b-1 border-default-100",
-            cellButton: [
-              "data-[today=true]:bg-default-300 data-[today=true]:text-white data-[selected=true]:bg-transparent rounded-small",
-              // start (pseudo)
-              "data-[range-start=true]:before:rounded-l-small",
-              "data-[selection-start=true]:before:rounded-l-small",
-              // end (pseudo)
-              "data-[range-end=true]:before:rounded-r-small",
-              "data-[selection-end=true]:before:rounded-r-small",
-              // start (selected)
-              "data-[selected=true]:data-[selection-start=true]:data-[range-selection=true]:rounded-small",
-              // end (selected)
-              "data-[selected=true]:data-[selection-end=true]:data-[range-selection=true]:rounded-small",
-            ],
-          },
-        }}
-        className="w-full"
-        aria-label="Search between date"  // ✅ Add this to prevent undefined error
-        label="Search between date"
-        variant="bordered"
-      />
+      {/*<form action="">*/}
+      {/*  <DateRangePicker*/}
+      {/*    // aria-label="Select date range"*/}
+      {/*    // aria-labelledby="Select date range"  // ✅ Ensure this is added directly here*/}
+      {/*    label="Search between date"*/}
+      {/*    className="w-full"*/}
+      {/*    variant="bordered"*/}
+      {/*    calendarProps={{*/}
+      {/*      classNames: {*/}
+      {/*        base: "bg-background",*/}
+      {/*        headerWrapper: "pt-4 bg-background",*/}
+      {/*        prevButton: "border-1 border-default-200 rounded-small",*/}
+      {/*        nextButton: "border-1 border-default-200 rounded-small",*/}
+      {/*        gridHeader: "bg-background shadow-none border-b-1 border-default-100",*/}
+      {/*        cellButton: [*/}
+      {/*          "data-[today=true]:bg-default-300 data-[today=true]:text-white data-[selected=true]:bg-transparent rounded-small",*/}
+      {/*          // start (pseudo)*/}
+      {/*          "data-[range-start=true]:before:rounded-l-small",*/}
+      {/*          "data-[selection-start=true]:before:rounded-l-small",*/}
+      {/*          // end (pseudo)*/}
+      {/*          "data-[range-end=true]:before:rounded-r-small",*/}
+      {/*          "data-[selection-end=true]:before:rounded-r-small",*/}
+      {/*          // start (selected)*/}
+      {/*          "data-[selected=true]:data-[selection-start=true]:data-[range-selection=true]:rounded-small",*/}
+      {/*          // end (selected)*/}
+      {/*          "data-[selected=true]:data-[selection-end=true]:data-[range-selection=true]:rounded-small",*/}
+      {/*        ],*/}
+      {/*      },*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*</form>*/}
       <div className="w-full mt-3">
         {receipts.length === 0 ? (
           <p className="text-gray-600 text-center">No receipts available.</p>

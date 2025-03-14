@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { fetchReceipts } from "@/app/(admin)/sale/receipt/action";
 import { Loading } from "@/app/components/Loading";
 import {Button} from "@nextui-org/react";
-import {DateRangePicker} from "@heroui/react";
+import {DatePicker} from "@heroui/react";
 
 const Receipt = () => {
   const [receipts, setReceipts] = useState([]);
@@ -40,34 +40,25 @@ const Receipt = () => {
 
   return (
     <>
-      {/*<form action="">*/}
-      {/*  <DateRangePicker*/}
-      {/*    className="w-full"*/}
-      {/*    variant="bordered"*/}
-      {/*    calendarProps={{*/}
-      {/*      classNames: {*/}
-      {/*        base: "bg-background",*/}
-      {/*        headerWrapper: "pt-4 bg-background",*/}
-      {/*        prevButton: "border-1 border-default-200 rounded-small",*/}
-      {/*        nextButton: "border-1 border-default-200 rounded-small",*/}
-      {/*        gridHeader: "bg-background shadow-none border-b-1 border-default-100",*/}
-      {/*        cellButton: [*/}
-      {/*          "data-[today=true]:bg-default-300 data-[today=true]:text-white data-[selected=true]:bg-transparent rounded-small",*/}
-      {/*          // start (pseudo)*/}
-      {/*          "data-[range-start=true]:before:rounded-l-small",*/}
-      {/*          "data-[selection-start=true]:before:rounded-l-small",*/}
-      {/*          // end (pseudo)*/}
-      {/*          "data-[range-end=true]:before:rounded-r-small",*/}
-      {/*          "data-[selection-end=true]:before:rounded-r-small",*/}
-      {/*          // start (selected)*/}
-      {/*          "data-[selected=true]:data-[selection-start=true]:data-[range-selection=true]:rounded-small",*/}
-      {/*          // end (selected)*/}
-      {/*          "data-[selected=true]:data-[selection-end=true]:data-[range-selection=true]:rounded-small",*/}
-      {/*        ],*/}
-      {/*      },*/}
-      {/*    }}*/}
-      {/*  />*/}
-      {/*</form>*/}
+      <div className="flex items-center justify-between gap-3">
+        <DatePicker
+          classNames={{
+            inputWrapper: "border border-themeBorder"
+          }}
+          className="w-full no-foreground"
+          size={"sm"}
+          aria-label={'Start Date'}
+          calendarProps={{
+            classNames: {
+              base: "text-white",
+              cellButton: [
+                "data-[disabled=true]:text-gray-400 data-[disabled=true]:cursor-default data-[readonly=true]:cursor-default data-[unavailable=true]:text-gray-400 data-[unavailable=true]:cursor-default data-[unavailable=true]:line-through",
+                "data-[selected=true]:bg-themeSecondary data-[selected=true]:text-white",
+              ],
+            }
+          }}
+        />
+      </div>
       <div className="w-full mt-3">
         {receipts.length === 0 ? (
           <p className="text-gray-600 text-center">No receipts available.</p>

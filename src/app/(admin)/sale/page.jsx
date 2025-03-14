@@ -221,6 +221,7 @@ const Sell = () => {
       <div className="flex w-full flex-col">
         <Tabs
           aria-label="Options"
+          // selectedKey={"receipt"}
           classNames={{
             tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
             cursor: "w-full bg-themeSecondary",

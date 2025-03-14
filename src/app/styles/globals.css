@@ -70,8 +70,18 @@ body {
   color: white !important;
 }
 
-span .w-8 h-8 flex items-center text-foreground justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased tap-highlight-transparent
-{
-  color: white !important;
+td[data-slot="cell"] span.w-8.h-8.flex.items-center.justify-center.rounded-full {
+  color: white !important; /* Change text color */
+}
+
+td[data-slot="cell"][aria-disabled="true"] span.w-8.h-8.flex.items-center.justify-center.rounded-full {
+  color: gray !important; /* Change text color for disabled dates */
+}
+
+
+td[data-slot="cell"] span.today {
+  background-color: #ffcc00;
+  color: black;
+  font-weight: bold;
 }
 
